@@ -1,0 +1,64 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source "../**/*.blade.php";
+@source "../**/*.js";
+@source "../**/*.vue";
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Custom utilities for responsive design */
+@layer utilities {
+    /* Hide scrollbar but keep functionality */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Touch-friendly minimum sizes */
+    .min-touch {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Smooth scrolling for better UX */
+    @media (prefers-reduced-motion: no-preference) {
+        html {
+            scroll-behavior: smooth;
+        }
+    }
+
+    /* Image loading optimization */
+    img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+
+    /* Prevent layout shift during image load */
+    img[loading="lazy"] {
+        content-visibility: auto;
+    }
+
+    /* Smooth image transitions */
+    picture {
+        display: block;
+    }
+
+    /* Optimize touch scrolling on mobile */
+    @media (hover: none) and (pointer: coarse) {
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        a, button {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+        }
+    }
+}

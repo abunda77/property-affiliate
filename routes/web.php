@@ -1,0 +1,49 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+// Redirect home to property catalog
+Route::get('/', function () {
+    return redirect()->route('properties.index');
+});
+
+// Public property catalog routes
+Route::get('/properties', function () {
+    return view('properties.index');
+})->name('properties.index');
+
+Route::get('/p/{slug}', function ($slug) {
+    return view('properties.show', ['slug' => $slug]);
+})->name('property.show');
+
+// Referral redirect route - redirects to property catalog with affiliate tracking
+Route::get('/ref/{affiliate_code}', function ($affiliate_code) {
+    // Validate affiliate code exists
+    $affiliate = \App\Models\User::where('affiliate_code', $affiliate_code)
+        ->where('status', \App\Enums\UserStatus::ACTIVE)
+        ->first();
+    
+    if ($affiliate) {
+        // Set affiliate cookie for 30 days (43200 minutes)
+        cookie()->queue('affiliate_id', $affiliate->id, 43200);
+        
+        // Record the visit via the tracking middleware
+        // The middleware will handle visit recording
+    }
+    
+    // Redirect to property catalog with ref parameter
+    // This ensures the tracking middleware processes it
+    return redirect()->route('properties.index', ['ref' => $affiliate_code]);
+})->name('referral.redirect');
+
+// Affiliate promotional materials download route
+Route::middleware(['auth'])->group(function () {
+    Route::get('/affiliate/promo/download/{property}', [App\Http\Controllers\AffiliatePromoController::class, 'download'])
+        ->name('affiliate.download-promo');
+});
+
+// Dynamic robots.txt
+Route::get('/robots.txt', function () {
+    $content = "User-agent: *\nDisallow:\n\nSitemap: " . url('/sitemap.xml');
+    return response($content)->header('Content-Type', 'text/plain');
+});
