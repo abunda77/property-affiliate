@@ -2,25 +2,27 @@
 
 namespace App\Filament\Pages;
 
-use App\Settings\GeneralSettings;
 use App\Services\GoWAService;
-use Filament\Facades\Filament;
-use Filament\Pages\SettingsPage;
-use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\FileUpload;
+use App\Settings\GeneralSettings;
 use Filament\Actions\Action;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Pages\SettingsPage;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class Settings extends SettingsPage
 {
     protected static string $settings = GeneralSettings::class;
 
-    protected static ?string $navigationLabel = 'Pengaturan Sistem';
+    protected static \UnitEnum|string|null $navigationGroup = 'Settings';
 
-    protected static ?string $title = 'Pengaturan Sistem';
+    protected static ?string $navigationLabel = 'General Settings';
+
+    protected static ?string $title = 'General Settings';
 
     protected static ?int $navigationSort = 100;
 
@@ -33,6 +35,7 @@ class Settings extends SettingsPage
     {
         /** @var \App\Models\User|null $user */
         $user = Filament::auth()->user();
+
         return $user?->roles()->where('name', 'super_admin')->exists() ?? false;
     }
 
@@ -49,7 +52,7 @@ class Settings extends SettingsPage
                 ->modalSubmitActionLabel('Kirim Test')
                 ->action(function () {
                     $data = $this->form->getState();
-                    
+
                     $username = $data['gowa_username'] ?? null;
                     $password = $data['gowa_password'] ?? null;
                     $apiUrl = $data['gowa_api_url'] ?? null;
@@ -61,6 +64,7 @@ class Settings extends SettingsPage
                             ->body('Silakan isi nomor test terlebih dahulu.')
                             ->danger()
                             ->send();
+
                         return;
                     }
 
@@ -70,6 +74,7 @@ class Settings extends SettingsPage
                             ->body('Pastikan username, password, dan URL API sudah diisi.')
                             ->warning()
                             ->send();
+
                         return;
                     }
 
