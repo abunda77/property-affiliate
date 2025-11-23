@@ -81,9 +81,8 @@ class TopPropertiesWidget extends BaseWidget
     protected function getTableFilters(): array
     {
         return [
-            'week' => 'This Week',
-            'month' => 'This Month',
-            'year' => 'This Year',
+            // Fix: Return empty array to avoid "Call to a member function table() on string" error
+            // The previous values were likely intended for a widget filter, not table filters
         ];
     }
 

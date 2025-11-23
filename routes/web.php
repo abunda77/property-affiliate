@@ -47,3 +47,12 @@ Route::get('/robots.txt', function () {
     $content = "User-agent: *\nDisallow:\n\nSitemap: " . url('/sitemap.xml');
     return response($content)->header('Content-Type', 'text/plain');
 });
+
+// Auth Route Redirects to Filament
+Route::get('/login', function () {
+    return redirect()->route('filament.admin.auth.login');
+})->name('login');
+
+Route::get('/register', function () {
+    return redirect()->route('filament.admin.auth.register');
+})->name('register');
