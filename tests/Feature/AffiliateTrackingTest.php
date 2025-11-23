@@ -62,9 +62,16 @@ class AffiliateTrackingTest extends TestCase
 
         // First request with ref parameter
         $firstResponse = $this->get('/properties?ref=TEST5678');
+        $firstResponse->assertStatus(200);
 
-        // Second request without ref parameter but with unencrypted cookie value
-        $response = $this->withUnencryptedCookie('affiliate_id', (string) $affiliate->id)->get('/properties');
+        // Get the cookie from the first response
+        $cookies = $firstResponse->headers->getCookies();
+        $affiliateCookie = collect($cookies)->first(fn($cookie) => $cookie->getName() === 'affiliate_id');
+        
+        $this->assertNotNull($affiliateCookie, 'Affiliate cookie should be set after first request');
+
+        // Second request without ref parameter but with the actual cookie from first response
+        $response = $this->withCookie($affiliateCookie->getName(), $affiliateCookie->getValue())->get('/properties');
 
         $response->assertStatus(200);
 
@@ -268,15 +275,21 @@ class AffiliateTrackingTest extends TestCase
             'status' => UserStatus::ACTIVE,
         ]);
 
-        // First request with ref parameter
+        // First request with ref parameter to set cookie
         $response1 = $this->get('/properties?ref=PERSIST1');
         $response1->assertStatus(200);
 
-        // Navigate to different pages with cookie
-        $response2 = $this->withUnencryptedCookie('affiliate_id', (string) $affiliate->id)->get('/properties');
+        // Get the cookie from the first response
+        $cookies = $response1->headers->getCookies();
+        $affiliateCookie = collect($cookies)->first(fn($cookie) => $cookie->getName() === 'affiliate_id');
+        
+        $this->assertNotNull($affiliateCookie, 'Affiliate cookie should be set after first request');
+
+        // Navigate to different pages with the same cookie
+        $response2 = $this->withCookie($affiliateCookie->getName(), $affiliateCookie->getValue())->get('/properties');
         $response2->assertStatus(200);
 
-        $response3 = $this->withUnencryptedCookie('affiliate_id', (string) $affiliate->id)->get('/properties');
+        $response3 = $this->withCookie($affiliateCookie->getName(), $affiliateCookie->getValue())->get('/properties');
         $response3->assertStatus(200);
 
         // Assert three visits were recorded for the same affiliate
@@ -336,11 +349,20 @@ class AffiliateTrackingTest extends TestCase
             'status' => UserStatus::ACTIVE,
         ]);
 
+        // First request with ref parameter to set cookie
+        $firstResponse = $this->get('/properties?ref=MULTI01');
+        $firstResponse->assertStatus(200);
+
+        // Get the cookie from the first response
+        $cookies = $firstResponse->headers->getCookies();
+        $affiliateCookie = collect($cookies)->first(fn($cookie) => $cookie->getName() === 'affiliate_id');
+        
+        $this->assertNotNull($affiliateCookie, 'Affiliate cookie should be set after first request');
+
         // Make multiple requests with the same affiliate cookie
-        $this->get('/properties?ref=MULTI01');
-        $this->withUnencryptedCookie('affiliate_id', (string) $affiliate->id)->get('/properties');
-        $this->withUnencryptedCookie('affiliate_id', (string) $affiliate->id)->get('/properties');
-        $this->withUnencryptedCookie('affiliate_id', (string) $affiliate->id)->get('/properties');
+        $this->withCookie($affiliateCookie->getName(), $affiliateCookie->getValue())->get('/properties');
+        $this->withCookie($affiliateCookie->getName(), $affiliateCookie->getValue())->get('/properties');
+        $this->withCookie($affiliateCookie->getName(), $affiliateCookie->getValue())->get('/properties');
 
         // Assert four visits were recorded
         $this->assertEquals(4, Visit::where('affiliate_id', $affiliate->id)->count());
@@ -378,8 +400,9 @@ class AffiliateTrackingTest extends TestCase
 
     public function test_visit_not_recorded_for_nonexistent_affiliate_id_in_cookie(): void
     {
-        // Make a request with invalid affiliate_id in cookie
-        $response = $this->withUnencryptedCookie('affiliate_id', '99999')->get('/');
+        // Make a request with invalid affiliate_id in cookie to properties page
+        // Using /properties instead of / to avoid redirect
+        $response = $this->withCookie('affiliate_id', '99999')->get('/properties');
 
         $response->assertStatus(200);
 
@@ -403,7 +426,7 @@ class AffiliateTrackingTest extends TestCase
         $response1->assertStatus(200);
 
         // Test Edge
-        $response2 = $this->withUnencryptedCookie('affiliate_id', (string) $affiliate->id)
+        $response2 = $this->withCookie('affiliate_id', (string) $affiliate->id)
             ->withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.59',
             ])->get('/properties');

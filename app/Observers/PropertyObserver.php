@@ -3,6 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Property;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class PropertyObserver
@@ -59,5 +61,33 @@ class PropertyObserver
         }
 
         return $query->exists();
+    }
+
+    /**
+     * Handle the Property "saved" event.
+     * Clear property catalog cache when properties are created or updated.
+     */
+    public function saved(Property $property): void
+    {
+        // Clear property catalog cache
+        Cache::flush(); // Clear all cache with property_catalog_ prefix
+        
+        // Regenerate sitemap in background if property is published
+        if ($property->status === \App\Enums\PropertyStatus::PUBLISHED) {
+            Artisan::call('sitemap:generate');
+        }
+    }
+
+    /**
+     * Handle the Property "deleted" event.
+     * Clear property catalog cache when properties are deleted.
+     */
+    public function deleted(Property $property): void
+    {
+        // Clear property catalog cache
+        Cache::flush();
+        
+        // Regenerate sitemap
+        Artisan::call('sitemap:generate');
     }
 }

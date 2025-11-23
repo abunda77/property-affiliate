@@ -73,6 +73,10 @@ class PropertiesTable
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->modifyQueryUsing(function ($query) {
+                // Eager load media to prevent N+1 queries
+                $query->with('media');
+            });
     }
 }

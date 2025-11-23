@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class AnalyticsService
@@ -19,16 +20,21 @@ class AnalyticsService
      */
     public function getAffiliateMetrics(User $affiliate, Carbon $startDate, Carbon $endDate): array
     {
-        $totalVisits = $this->getTotalVisits($affiliate, $startDate, $endDate);
-        $totalLeads = $this->getTotalLeads($affiliate, $startDate, $endDate);
+        // Cache affiliate analytics for 15 minutes
+        $cacheKey = "affiliate_metrics_{$affiliate->id}_{$startDate->format('Y-m-d')}_{$endDate->format('Y-m-d')}";
         
-        return [
-            'total_visits' => $totalVisits,
-            'total_leads' => $totalLeads,
-            'conversion_rate' => $this->getConversionRate($totalVisits, $totalLeads),
-            'device_breakdown' => $this->getDeviceBreakdown($affiliate, $startDate, $endDate),
-            'top_properties' => $this->getTopProperties($affiliate, $startDate, $endDate),
-        ];
+        return Cache::remember($cacheKey, 900, function () use ($affiliate, $startDate, $endDate) {
+            $totalVisits = $this->getTotalVisits($affiliate, $startDate, $endDate);
+            $totalLeads = $this->getTotalLeads($affiliate, $startDate, $endDate);
+            
+            return [
+                'total_visits' => $totalVisits,
+                'total_leads' => $totalLeads,
+                'conversion_rate' => $this->getConversionRate($totalVisits, $totalLeads),
+                'device_breakdown' => $this->getDeviceBreakdown($affiliate, $startDate, $endDate),
+                'top_properties' => $this->getTopProperties($affiliate, $startDate, $endDate),
+            ];
+        });
     }
 
     /**
@@ -110,21 +116,28 @@ class AnalyticsService
      */
     private function getTopProperties(User $affiliate, Carbon $startDate, Carbon $endDate): Collection
     {
-        return $affiliate->visits()
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->whereNotNull('property_id')
-            ->select('property_id', DB::raw('count(*) as visit_count'))
-            ->groupBy('property_id')
+        // Optimized query using aggregation and join to prevent N+1
+        return DB::table('visits')
+            ->join('properties', 'visits.property_id', '=', 'properties.id')
+            ->where('visits.affiliate_id', $affiliate->id)
+            ->whereBetween('visits.created_at', [$startDate, $endDate])
+            ->whereNotNull('visits.property_id')
+            ->select(
+                'properties.id as property_id',
+                'properties.title as property_title',
+                'properties.slug as property_slug',
+                DB::raw('COUNT(*) as visit_count')
+            )
+            ->groupBy('properties.id', 'properties.title', 'properties.slug')
             ->orderByDesc('visit_count')
             ->limit(5)
-            ->with('property:id,title,slug')
             ->get()
-            ->map(function ($visit) {
+            ->map(function ($row) {
                 return [
-                    'property_id' => $visit->property_id,
-                    'property_title' => $visit->property->title ?? 'Unknown',
-                    'property_slug' => $visit->property->slug ?? '',
-                    'visit_count' => $visit->visit_count,
+                    'property_id' => $row->property_id,
+                    'property_title' => $row->property_title,
+                    'property_slug' => $row->property_slug,
+                    'visit_count' => $row->visit_count,
                 ];
             });
     }
@@ -138,18 +151,23 @@ class AnalyticsService
      */
     public function getGlobalMetrics(Carbon $startDate, Carbon $endDate): array
     {
-        $totalVisits = $this->getGlobalTotalVisits($startDate, $endDate);
-        $totalLeads = $this->getGlobalTotalLeads($startDate, $endDate);
+        // Cache global analytics for 15 minutes
+        $cacheKey = "global_metrics_{$startDate->format('Y-m-d')}_{$endDate->format('Y-m-d')}";
         
-        return [
-            'total_traffic' => $totalVisits,
-            'total_leads' => $totalLeads,
-            'active_affiliates' => $this->getActiveAffiliatesCount($startDate, $endDate),
-            'conversion_rate' => $this->getConversionRate($totalVisits, $totalLeads),
-            'top_affiliates' => $this->getTopAffiliates($startDate, $endDate),
-            'recent_leads' => $this->getRecentLeads(),
-            'recent_property_views' => $this->getRecentPropertyViews(),
-        ];
+        return Cache::remember($cacheKey, 900, function () use ($startDate, $endDate) {
+            $totalVisits = $this->getGlobalTotalVisits($startDate, $endDate);
+            $totalLeads = $this->getGlobalTotalLeads($startDate, $endDate);
+            
+            return [
+                'total_traffic' => $totalVisits,
+                'total_leads' => $totalLeads,
+                'active_affiliates' => $this->getActiveAffiliatesCount($startDate, $endDate),
+                'conversion_rate' => $this->getConversionRate($totalVisits, $totalLeads),
+                'top_affiliates' => $this->getTopAffiliates($startDate, $endDate),
+                'recent_leads' => $this->getRecentLeads(),
+                'recent_property_views' => $this->getRecentPropertyViews(),
+            ];
+        });
     }
 
     /**

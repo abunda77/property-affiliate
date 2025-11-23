@@ -35,6 +35,7 @@ class AffiliateTrackingMiddleware
             'is_livewire' => $request->is('livewire/*'),
             'has_ref' => $request->has('ref'),
             'has_affiliate_cookie' => $request->cookie('affiliate_id'),
+            'all_cookies' => $request->cookie(),
         ]);
 
         $affiliateId = null;
@@ -57,17 +58,45 @@ class AffiliateTrackingMiddleware
             }
         }
         // Read affiliate_id from existing cookie if no ref parameter
-        elseif ($request->cookie('affiliate_id')) {
-            $affiliateId = (int) $request->cookie('affiliate_id');
+        // Check multiple ways to get cookie value for compatibility
+        $cookieValue = null;
+        
+        // Standard way
+        if ($request->cookie('affiliate_id')) {
+            $cookieValue = $request->cookie('affiliate_id');
+        }
+        // Alternative way for test environment
+        elseif ($request->hasCookie('affiliate_id')) {
+            $cookieValue = $request->cookie('affiliate_id');
+        }
+        // Check raw cookie data
+        elseif (isset($_COOKIE['affiliate_id'])) {
+            $cookieValue = $_COOKIE['affiliate_id'];
+        }
+        
+        if ($cookieValue !== null && $cookieValue !== '') {
+            $affiliateId = (int) $cookieValue;
             
             Log::debug('AffiliateTrackingMiddleware: Found affiliate from cookie', [
                 'affiliate_id' => $affiliateId,
+                'cookie_value_raw' => $cookieValue,
+                'cookie_value_casted' => (int) $cookieValue,
+                'all_cookies' => $request->cookie(),
+                'raw_cookies' => $_COOKIE ?? [],
             ]);
         }
 
         // Record visit if we have an affiliate ID
         if ($affiliateId) {
+            Log::debug('AffiliateTrackingMiddleware: About to record visit', [
+                'affiliate_id' => $affiliateId,
+                'visit_count_before' => \App\Models\Visit::where('affiliate_id', $affiliateId)->count(),
+            ]);
             $this->recordVisit($affiliateId, $request);
+            Log::debug('AffiliateTrackingMiddleware: Visit recording completed', [
+                'affiliate_id' => $affiliateId,
+                'visit_count_after' => \App\Models\Visit::where('affiliate_id', $affiliateId)->count(),
+            ]);
         }
 
         Log::debug('AffiliateTrackingMiddleware: Passing to next middleware', [
@@ -181,7 +210,12 @@ class AffiliateTrackingMiddleware
             return 'unknown';
         }
 
+        Log::debug('AffiliateTrackingMiddleware: Detecting browser', [
+            'user_agent' => $userAgent,
+        ]);
+
         $browsers = [
+            'Edg/' => 'Edge',  // More specific pattern for Edge
             'Edge' => 'Edge',
             'Edg' => 'Edge',
             'Chrome' => 'Chrome',
@@ -195,10 +229,15 @@ class AffiliateTrackingMiddleware
 
         foreach ($browsers as $key => $browser) {
             if (stripos($userAgent, $key) !== false) {
+                Log::debug('AffiliateTrackingMiddleware: Browser detected', [
+                    'detected_browser' => $browser,
+                    'matched_key' => $key,
+                ]);
                 return $browser;
             }
         }
 
+        Log::debug('AffiliateTrackingMiddleware: No browser matched, returning unknown');
         return 'unknown';
     }
 

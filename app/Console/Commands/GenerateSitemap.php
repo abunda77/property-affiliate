@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Property;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
@@ -56,6 +57,9 @@ class GenerateSitemap extends Command
 
         // Write sitemap to public directory
         $sitemap->writeToFile(public_path('sitemap.xml'));
+
+        // Cache sitemap for 24 hours
+        Cache::put('sitemap_last_generated', now(), 86400);
 
         $this->info('Sitemap generated successfully at: ' . public_path('sitemap.xml'));
 

@@ -20,6 +20,7 @@ class AffiliatePropertiesTable
             ->query(
                 Property::query()
                     ->where('status', PropertyStatus::PUBLISHED)
+                    ->with('media') // Eager load media to prevent N+1 queries
                     ->orderBy('created_at', 'desc')
             )
             ->columns([

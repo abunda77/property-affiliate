@@ -154,7 +154,9 @@ class LeadsTable
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
                 // Filter to show only leads assigned to logged-in affiliate
-                $query->where('affiliate_id', Auth::id());
+                // Add eager loading to prevent N+1 queries
+                $query->where('affiliate_id', Auth::id())
+                    ->with(['property:id,title,slug']);
             });
     }
 
