@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
-use App\Events\LeadCreated;
-use App\Listeners\SendLeadNotification;
+
+
 use App\Models\Property;
 use App\Observers\PropertyObserver;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
-use Illuminate\Support\Facades\Event;
+
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,11 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Property::observe(PropertyObserver::class);
 
-        // Register event listeners
-        Event::listen(
-            LeadCreated::class,
-            SendLeadNotification::class,
-        );
+
 
         // Configure Scramble API Documentation
         Scramble::configure()
