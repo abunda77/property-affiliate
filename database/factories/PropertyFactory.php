@@ -11,24 +11,24 @@ class PropertyFactory extends Factory
     public function definition(): array
     {
         $title = fake()->sentence(3);
-        
+
         return [
             'title' => $title,
             'slug' => Str::slug($title),
             'price' => fake()->numberBetween(500000000, 5000000000),
-            'location' => fake()->city() . ', ' . fake()->state(),
+            'location' => fake()->city().', '.fake()->state(),
             'description' => fake()->paragraphs(3, true),
             'features' => [
-                'Swimming Pool',
-                'Garden',
-                'Parking',
-                'Security 24/7',
+                ['feature' => 'Swimming Pool'],
+                ['feature' => 'Garden'],
+                ['feature' => 'Parking'],
+                ['feature' => 'Security 24/7'],
             ],
             'specs' => [
                 'Bedrooms' => fake()->numberBetween(2, 5),
                 'Bathrooms' => fake()->numberBetween(1, 3),
-                'Land Size' => fake()->numberBetween(100, 500) . ' m²',
-                'Building Size' => fake()->numberBetween(80, 400) . ' m²',
+                'Land Size' => fake()->numberBetween(100, 500).' m²',
+                'Building Size' => fake()->numberBetween(80, 400).' m²',
             ],
             'status' => PropertyStatus::PUBLISHED,
         ];

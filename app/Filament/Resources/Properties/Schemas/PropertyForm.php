@@ -7,10 +7,10 @@ use App\Models\Property;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -82,12 +82,12 @@ class PropertyForm
                 Section::make('Features')
                     ->schema([
                         Repeater::make('features')
-                            ->simple(
+                            ->schema([
                                 TextInput::make('feature')
                                     ->label('Feature')
                                     ->required()
-                                    ->maxLength(255)
-                            )
+                                    ->maxLength(255),
+                            ])
                             ->defaultItems(0)
                             ->addActionLabel('Add Feature')
                             ->columnSpanFull()

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Properties;
 
-use App\Filament\Resources\Properties\Pages;
+use App\Filament\Resources\Properties\Infolists\PropertyInfolist;
 use App\Filament\Resources\Properties\Schemas\PropertyForm;
 use App\Filament\Resources\Properties\Tables\PropertiesTable;
 use App\Models\Property;
@@ -15,7 +15,7 @@ class PropertyResource extends Resource
 {
     protected static ?string $model = Property::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 
     public static function form(Schema $schema): Schema
     {
@@ -25,6 +25,11 @@ class PropertyResource extends Resource
     public static function table(Table $table): Table
     {
         return PropertiesTable::configure($table);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return PropertyInfolist::configure($schema);
     }
 
     public static function getRelations(): array
