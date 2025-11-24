@@ -21,6 +21,7 @@ class Lead extends Model
         'property_id',
         'name',
         'whatsapp',
+        'message',
         'status',
         'notes',
     ];

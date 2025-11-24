@@ -47,9 +47,10 @@ class SendLeadNotification implements ShouldQueue
     {
         try {
             $message = sprintf(
-                "Halo, ada prospek baru atas nama %s untuk properti %s. Segera follow up!",
+                "Halo, ada prospek baru atas nama %s untuk properti %s.\n\nPesan: %s\n\nSegera follow up!",
                 $lead->name,
-                $lead->property->title
+                $lead->property->title,
+                $lead->message ?? '-'
             );
 
             $context = [

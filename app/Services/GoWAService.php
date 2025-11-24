@@ -2,24 +2,29 @@
 
 namespace App\Services;
 
-use App\Settings\GeneralSettings;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Notification;
 use App\Models\User;
 use App\Notifications\GoWAApiFailureNotification;
+use App\Settings\GeneralSettings;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class GoWAService
 {
     private string $username;
+
     private string $password;
+
     private string $apiUrl;
-    
+
     // Retry configuration
     private const MAX_RETRIES = 3;
+
     private const INITIAL_RETRY_DELAY = 1000; // milliseconds
+
     private const FAILURE_THRESHOLD = 5; // Number of failures before admin notification
+
     private const FAILURE_WINDOW = 3600; // Time window in seconds (1 hour)
 
     public function __construct(?string $username = null, ?string $password = null, ?string $apiUrl = null)
@@ -41,23 +46,22 @@ class GoWAService
     /**
      * Send a WhatsApp message via GoWA API with retry mechanism
      *
-     * @param string $phone Phone number to send message to
-     * @param string $message Message content
-     * @param string|null $replyMessageId Optional message ID to reply to
-     * @param bool $isForwarded Whether the message is forwarded
-     * @param int $duration Message duration in seconds
-     * @param array $context Additional context for logging (e.g., lead_id, property_id)
+     * @param  string  $phone  Phone number to send message to
+     * @param  string  $message  Message content
+     * @param  string|null  $replyMessageId  Optional message ID to reply to
+     * @param  bool  $isForwarded  Whether the message is forwarded
+     * @param  int  $duration  Message duration in seconds
+     * @param  array  $context  Additional context for logging (e.g., lead_id, property_id)
      * @return bool Success status
      */
     public function sendMessage(
-        string $phone, 
-        string $message, 
+        string $phone,
+        string $message,
         ?string $replyMessageId = null,
         bool $isForwarded = false,
         int $duration = 3600,
         array $context = []
-    ): bool
-    {
+    ): bool {
         $formattedPhone = $this->formatPhone($phone);
         $attempt = 0;
         $lastException = null;
@@ -85,7 +89,7 @@ class GoWAService
                         'Content-Type' => 'application/json',
                     ])
                     ->timeout(10)
-                    ->post($this->apiUrl . '/send/message', $data);
+                    ->post($this->apiUrl.'/send/message', $data);
 
                 if ($response->successful()) {
                     Log::info('WhatsApp message sent successfully', array_merge([
@@ -93,10 +97,10 @@ class GoWAService
                         'message_length' => strlen($message),
                         'attempt' => $attempt,
                     ], $context));
-                    
+
                     // Reset failure counter on success
                     $this->resetFailureCounter();
-                    
+
                     return true;
                 }
 
@@ -117,7 +121,7 @@ class GoWAService
 
             } catch (\Exception $e) {
                 $lastException = $e;
-                
+
                 Log::error('GoWA API Error', array_merge([
                     'phone' => $phone,
                     'message' => $e->getMessage(),
@@ -150,20 +154,19 @@ class GoWAService
     /**
      * Increment the failure counter and notify admin if threshold is reached
      *
-     * @param array $context Additional context for the failure
-     * @return void
+     * @param  array  $context  Additional context for the failure
      */
     private function incrementFailureCounter(array $context = []): void
     {
         $cacheKey = 'gowa_api_failures';
         $failures = Cache::get($cacheKey, 0);
         $failures++;
-        
+
         Cache::put($cacheKey, $failures, self::FAILURE_WINDOW);
 
         if ($failures >= self::FAILURE_THRESHOLD) {
             $this->notifyAdminOfRepeatedFailures($failures, $context);
-            
+
             // Reset counter after notification to avoid spam
             Cache::put($cacheKey, 0, self::FAILURE_WINDOW);
         }
@@ -171,8 +174,6 @@ class GoWAService
 
     /**
      * Reset the failure counter
-     *
-     * @return void
      */
     private function resetFailureCounter(): void
     {
@@ -182,9 +183,8 @@ class GoWAService
     /**
      * Notify admin users of repeated GoWA API failures
      *
-     * @param int $failureCount Number of failures
-     * @param array $context Additional context
-     * @return void
+     * @param  int  $failureCount  Number of failures
+     * @param  array  $context  Additional context
      */
     private function notifyAdminOfRepeatedFailures(int $failureCount, array $context = []): void
     {
@@ -194,6 +194,7 @@ class GoWAService
 
             if ($admins->isEmpty()) {
                 Log::warning('No super admin users found to notify about GoWA API failures');
+
                 return;
             }
 
@@ -223,7 +224,7 @@ class GoWAService
     /**
      * Test the GoWA API connection
      *
-     * @param string $testPhone Phone number to send test message to
+     * @param  string  $testPhone  Phone number to send test message to
      * @return array Response with success status and message
      */
     public function testConnection(string $testPhone): array
@@ -243,7 +244,7 @@ class GoWAService
             // Prepare test message
             $data = [
                 'phone' => $formattedPhone,
-                'message' => 'Test koneksi GoWA API - ' . now()->format('Y-m-d H:i:s'),
+                'message' => 'Test koneksi GoWA API - '.now()->format('Y-m-d H:i:s'),
                 'is_forwarded' => false,
                 'duration' => 3600,
             ];
@@ -254,26 +255,26 @@ class GoWAService
                     'Content-Type' => 'application/json',
                 ])
                 ->timeout(10)
-                ->post($this->apiUrl . '/send/message', $data);
+                ->post($this->apiUrl.'/send/message', $data);
 
             if ($response->successful()) {
                 $responseData = $response->json();
-                
+
                 return [
                     'success' => true,
-                    'message' => 'Koneksi berhasil! Pesan test telah dikirim ke ' . $testPhone,
+                    'message' => 'Koneksi berhasil! Pesan test telah dikirim ke '.$testPhone,
                     'data' => $responseData,
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => 'Koneksi gagal. Status: ' . $response->status() . ' - ' . $response->body(),
+                'message' => 'Koneksi gagal. Status: '.$response->status().' - '.$response->body(),
             ];
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Error: ' . $e->getMessage(),
+                'message' => 'Error: '.$e->getMessage(),
             ];
         }
     }
@@ -282,7 +283,7 @@ class GoWAService
      * Format phone number to WhatsApp format (e.g., 6289685028129@s.whatsapp.net)
      * Converts Indonesian phone numbers starting with 0 to 62
      *
-     * @param string $phone Phone number to format
+     * @param  string  $phone  Phone number to format
      * @return string Formatted phone number for WhatsApp
      */
     private function formatPhone(string $phone): string
@@ -292,15 +293,15 @@ class GoWAService
 
         // If phone starts with 0, replace with 62 (Indonesia)
         if (str_starts_with($phone, '0')) {
-            $phone = '62' . substr($phone, 1);
+            $phone = '62'.substr($phone, 1);
         }
 
         // If phone doesn't start with 62, assume Indonesian number
-        if (!str_starts_with($phone, '62')) {
-            $phone = '62' . $phone;
+        if (! str_starts_with($phone, '62')) {
+            $phone = '62'.$phone;
         }
 
         // Add WhatsApp suffix
-        return $phone . '@s.whatsapp.net';
+        return $phone.'@s.whatsapp.net';
     }
 }

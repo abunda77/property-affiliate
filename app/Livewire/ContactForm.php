@@ -6,14 +6,17 @@ use App\Enums\LeadStatus;
 use App\Events\LeadCreated;
 use App\Models\Lead;
 use App\Models\Property;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class ContactForm extends Component
 {
     public Property $property;
+
     public string $name = '';
+
     public string $whatsapp = '';
+
+    public string $message = '';
 
     protected $rules = [
         'name' => [
@@ -27,6 +30,11 @@ class ContactForm extends Component
             'string',
             'regex:/^[0-9]{10,15}$/',
         ],
+        'message' => [
+            'nullable',
+            'string',
+            'max:1000',
+        ],
     ];
 
     protected $messages = [
@@ -35,6 +43,7 @@ class ContactForm extends Component
         'name.regex' => 'Nama hanya boleh berisi huruf, spasi, tanda hubung, dan titik.',
         'whatsapp.required' => 'Nomor WhatsApp wajib diisi.',
         'whatsapp.regex' => 'Nomor WhatsApp harus berupa angka 10-15 digit.',
+        'message.max' => 'Pesan maksimal 1000 karakter.',
     ];
 
     public function submit()
@@ -42,6 +51,7 @@ class ContactForm extends Component
         // Sanitize inputs before validation
         $this->name = strip_tags($this->name);
         $this->whatsapp = preg_replace('/[^0-9]/', '', $this->whatsapp);
+        $this->message = strip_tags($this->message);
 
         $this->validate();
 
@@ -54,6 +64,7 @@ class ContactForm extends Component
             'property_id' => $this->property->id,
             'name' => $this->name,
             'whatsapp' => $this->whatsapp,
+            'message' => $this->message,
             'status' => LeadStatus::NEW,
         ]);
 
@@ -64,7 +75,7 @@ class ContactForm extends Component
         session()->flash('success', 'Terima kasih! Kami akan segera menghubungi Anda.');
 
         // Reset form
-        $this->reset(['name', 'whatsapp']);
+        $this->reset(['name', 'whatsapp', 'message']);
 
         // Redirect to show success message
         $this->redirect(request()->header('referer'));

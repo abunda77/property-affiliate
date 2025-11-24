@@ -31,6 +31,18 @@ class LeadsTable
                     ->copyable()
                     ->copyMessage('Nomor WhatsApp disalin!')
                     ->icon('heroicon-m-phone'),
+                
+                Tables\Columns\TextColumn::make('message')
+                    ->label('Pesan')
+                    ->limit(50)
+                    ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
+                        $state = $column->getState();
+                        if (strlen($state) <= 50) {
+                            return null;
+                        }
+                        return $state;
+                    })
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('property.title')
                     ->label('Properti')
