@@ -152,6 +152,13 @@ class Settings extends SettingsPage
                             ->visibility('public')
                             ->maxSize(2048)
                             ->helperText('Upload logo dalam format PNG, JPG, atau SVG (maksimal 2MB)'),
+                        TextInput::make('logo_url')
+                            ->label('URL Tujuan Logo')
+                            ->url()
+                            ->helperText('URL yang akan dibuka ketika logo diklik (contoh: https://example.com)')
+                            ->placeholder('https://example.com')
+                            ->maxLength(255)
+                            ->columnSpanFull(),
                     ]),
 
                 Section::make('Pengaturan SEO')

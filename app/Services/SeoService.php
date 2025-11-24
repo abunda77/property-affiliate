@@ -105,17 +105,34 @@ class SeoService
         $keywords = [];
 
         // Add location
-        $keywords[] = $property->location;
+        if ($property->location) {
+            $keywords[] = $property->location;
+        }
 
-        // Add features
+        // Add features - flatten and filter to only string values
         if ($property->features && is_array($property->features)) {
-            $keywords = array_merge($keywords, array_slice($property->features, 0, 5));
+            $flattenedFeatures = [];
+            
+            foreach ($property->features as $key => $value) {
+                // Handle both associative arrays and simple arrays
+                if (is_string($value)) {
+                    $flattenedFeatures[] = $value;
+                } elseif (is_string($key)) {
+                    $flattenedFeatures[] = $key;
+                }
+            }
+            
+            // Add up to 5 features
+            $keywords = array_merge($keywords, array_slice($flattenedFeatures, 0, 5));
         }
 
         // Add property type from title
         $keywords[] = 'properti';
         $keywords[] = 'real estate';
 
+        // Filter out any non-string values and remove duplicates
+        $keywords = array_filter($keywords, 'is_string');
+        
         return implode(', ', array_unique($keywords));
     }
 }

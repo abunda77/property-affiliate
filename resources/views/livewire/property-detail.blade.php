@@ -182,7 +182,7 @@
                 <section class="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Deskripsi</h2>
                     <div class="prose prose-sm sm:prose max-w-none text-gray-700 text-sm sm:text-base">
-                        {!! nl2br(e($property->description)) !!}
+                        {{ \Filament\Forms\Components\RichEditor\RichContentRenderer::make($property->description) }}
                     </div>
                 </section>
 
@@ -191,13 +191,25 @@
                     <section class="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
                         <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Fitur</h2>
                         <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                            @foreach($property->features as $feature)
-                                <li class="flex items-start">
-                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                    <span class="text-sm sm:text-base text-gray-700">{{ $feature }}</span>
-                                </li>
+                            @foreach($property->features as $key => $feature)
+                                @php
+                                    // Handle both simple arrays and associative arrays
+                                    $featureText = '';
+                                    if (is_string($feature)) {
+                                        $featureText = $feature;
+                                    } elseif (is_string($key)) {
+                                        $featureText = $key;
+                                    }
+                                @endphp
+                                
+                                @if($featureText)
+                                    <li class="flex items-start">
+                                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span class="text-sm sm:text-base text-gray-700">{{ $featureText }}</span>
+                                    </li>
+                                @endif
                             @endforeach
                         </ul>
                     </section>

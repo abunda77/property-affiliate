@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Katalog Properti - {{ config('app.name', 'PAMS') }}</title>
+    @php
+        $settings = app(\App\Settings\GeneralSettings::class);
+    @endphp
+
+    <title>Katalog Properti - {{ $settings->seo_meta_title ?? config('app.name', 'PAMS') }}</title>
+    
+    <!-- Favicon -->
+    @if($settings->logo_path)
+        <link rel="icon" type="image/x-icon" href="{{ Storage::url($settings->logo_path) }}">
+    @endif
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -21,9 +30,15 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex items-center">
-                    <a href="{{ route('properties.index') }}" class="text-2xl font-bold text-blue-600">
-                        PAMS
-                    </a>
+                    @if($settings->logo_path)
+                        <a href="{{ $settings->logo_url ?: route('properties.index') }}" class="flex items-center">
+                            <img src="{{ Storage::url($settings->logo_path) }}" alt="{{ $settings->seo_meta_title ?? config('app.name', 'PAMS') }}" class="h-16 w-auto">
+                        </a>
+                    @else
+                        <a href="{{ route('properties.index') }}" class="text-2xl font-bold text-blue-600">
+                            {{ $settings->seo_meta_title ?? config('app.name', 'PAMS') }}
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Navigation Links -->
@@ -96,9 +111,15 @@
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
-                    <h3 class="text-xl font-bold mb-4">PAMS</h3>
+                    @if($settings->logo_path)
+                        <a href="{{ $settings->logo_url ?: route('properties.index') }}" class="inline-block mb-4">
+                            <img src="{{ Storage::url($settings->logo_path) }}" alt="{{ $settings->seo_meta_title ?? config('app.name', 'PAMS') }}" class="h-12 w-auto">
+                        </a>
+                    @else
+                        <h3 class="text-xl font-bold mb-4">{{ $settings->seo_meta_title ?? config('app.name', 'PAMS') }}</h3>
+                    @endif
                     <p class="text-gray-400">
-                        Property Affiliate Management System - Platform properti dengan sistem afiliasi terpercaya.
+                        {{ $settings->seo_meta_description ?? 'Property Affiliate Management System - Platform properti dengan sistem afiliasi terpercaya.' }}
                     </p>
                 </div>
                 <div>
@@ -120,8 +141,12 @@
                 <div>
                     <h4 class="font-semibold mb-4">Kontak</h4>
                     <p class="text-gray-400">
-                        Email: info@pams.com<br>
-                        WhatsApp: +62 xxx xxxx xxxx
+                        @if($settings->contact_email)
+                            Email: {{ $settings->contact_email }}<br>
+                        @endif
+                        @if($settings->contact_whatsapp)
+                            WhatsApp: {{ $settings->contact_whatsapp }}
+                        @endif
                     </p>
                 </div>
             </div>

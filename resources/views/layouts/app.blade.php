@@ -51,7 +51,7 @@
             <div class="flex justify-between items-center h-14 sm:h-16">
                 <!-- Logo -->
                 <div class="flex items-center flex-shrink-0">
-                    <a href="{{ route('properties.index') }}" class="flex items-center">
+                    <a href="{{ ($settings && $settings->logo_url) ? $settings->logo_url : route('properties.index') }}" class="flex items-center">
                         @if($settings && $settings->logo_path)
                             <img src="{{ Storage::url($settings->logo_path) }}" alt="{{ $settings->seo_meta_title ?? 'PAMS' }}" class="h-8 sm:h-10 w-auto">
                         @else
@@ -139,9 +139,13 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div>
                     @if($settings && $settings->logo_path)
-                        <img src="{{ Storage::url($settings->logo_path) }}" alt="{{ $settings->seo_meta_title ?? 'PAMS' }} - Logo" class="h-8 sm:h-10 w-auto mb-4">
+                        <a href="{{ ($settings && $settings->logo_url) ? $settings->logo_url : route('properties.index') }}">
+                            <img src="{{ Storage::url($settings->logo_path) }}" alt="{{ $settings->seo_meta_title ?? 'PAMS' }} - Logo" class="h-8 sm:h-10 w-auto mb-4">
+                        </a>
                     @else
-                        <h2 class="text-lg sm:text-xl font-bold mb-4">PAMS</h2>
+                        <a href="{{ ($settings && $settings->logo_url) ? $settings->logo_url : route('properties.index') }}">
+                            <h2 class="text-lg sm:text-xl font-bold mb-4">PAMS</h2>
+                        </a>
                     @endif
                     <p class="text-sm sm:text-base text-gray-400">
                         {{ ($settings && $settings->seo_meta_description) ? $settings->seo_meta_description : 'Property Affiliate Management System - Platform properti dengan sistem afiliasi terpercaya.' }}
