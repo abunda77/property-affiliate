@@ -40,6 +40,11 @@ class BackupDatabase extends Page implements HasTable
         return 'Backup Database';
     }
 
+    public static function canAccess(): bool
+    {
+        return auth()->check() && auth()->user()->hasRole('super_admin');
+    }
+
     private const BACKUP_PATH = 'backup';
 
     private const MYSQLDUMP_PATH = [

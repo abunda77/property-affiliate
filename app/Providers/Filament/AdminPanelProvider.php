@@ -29,7 +29,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->registration()
+            ->brandName('Properti Affiliate System')
+            ->brandLogo(fn () => ($path = app(\App\Settings\GeneralSettings::class)->logo_path) ? \Illuminate\Support\Facades\Storage::disk('public')->url($path) : '/images/logo.png')
+            ->brandLogoHeight('5rem')
+            ->registration(\App\Filament\Pages\Auth\Register::class)
+            ->emailVerification(\App\Filament\Pages\Auth\EmailVerificationPrompt::class)
             ->colors([
                 'primary' => Color::Amber,
             ])

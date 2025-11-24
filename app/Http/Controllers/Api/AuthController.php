@@ -10,9 +10,54 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
+    /**
+     * Register a new user.
+     *
+     * Registers a new user with the provided details and dispatches the registration event
+     * to send the email verification notification.
+     *
+     * @param  Request  $request  The registration request
+     * @return JsonResponse Returns access token and user information
+     */
+    public function register(Request $request): JsonResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+            'whatsapp' => ['required', 'string', 'max:20'],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'whatsapp' => $request->whatsapp,
+            'status' => UserStatus::PENDING,
+        ]);
+
+        event(new Registered($user));
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'whatsapp' => $user->whatsapp,
+                'status' => $user->status->value,
+                'created_at' => $user->created_at,
+            ],
+        ], 201);
+    }
     /**
      * Login and return access token.
      *

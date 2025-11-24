@@ -35,4 +35,15 @@ class ApiDocumentation extends Page
     {
         return 'API Documentation (Scramble)';
     }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            \Filament\Actions\Action::make('open_docs')
+                ->label('Open Full Docs')
+                ->icon('heroicon-m-arrow-top-right-on-square')
+                ->url('/docs/api')
+                ->openUrlInNewTab(),
+        ];
+    }
 }

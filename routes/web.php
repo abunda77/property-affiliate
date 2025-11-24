@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Redirect home to property catalog
@@ -22,15 +23,15 @@ Route::get('/ref/{affiliate_code}', function ($affiliate_code) {
     $affiliate = \App\Models\User::where('affiliate_code', $affiliate_code)
         ->where('status', \App\Enums\UserStatus::ACTIVE)
         ->first();
-    
+
     if ($affiliate) {
         // Set affiliate cookie for 30 days (43200 minutes)
         cookie()->queue('affiliate_id', $affiliate->id, 43200);
-        
+
         // Record the visit via the tracking middleware
         // The middleware will handle visit recording
     }
-    
+
     // Redirect to property catalog with ref parameter
     // This ensures the tracking middleware processes it
     return redirect()->route('properties.index', ['ref' => $affiliate_code]);
@@ -44,7 +45,8 @@ Route::middleware(['auth'])->group(function () {
 
 // Dynamic robots.txt
 Route::get('/robots.txt', function () {
-    $content = "User-agent: *\nDisallow:\n\nSitemap: " . url('/sitemap.xml');
+    $content = "User-agent: *\nDisallow:\n\nSitemap: ".url('/sitemap.xml');
+
     return response($content)->header('Content-Type', 'text/plain');
 });
 
@@ -56,3 +58,22 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return redirect()->route('filament.admin.auth.register');
 })->name('register');
+
+// Email Verification Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+        $request->fulfill();
+
+        return redirect('/admin');
+    })->middleware(['signed'])->name('verification.verify');
+
+    Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+
+        return back()->with('message', 'Verification link sent!');
+    })->middleware(['throttle:6,1'])->name('verification.send');
+});

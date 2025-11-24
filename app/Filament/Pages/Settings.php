@@ -148,6 +148,7 @@ class Settings extends SettingsPage
                                 '1:1',
                             ])
                             ->directory('logos')
+                            ->disk('public')
                             ->visibility('public')
                             ->maxSize(2048)
                             ->helperText('Upload logo dalam format PNG, JPG, atau SVG (maksimal 2MB)'),
