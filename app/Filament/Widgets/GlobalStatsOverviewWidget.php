@@ -13,23 +13,23 @@ class GlobalStatsOverviewWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
 
-    public ?string $filter = 'today';
+    public ?string $filter = 'all';
 
     protected function getStats(): array
     {
         /** @var \App\Models\User|null $user */
         $user = Auth::user();
-        
+
         // Only show for Super Admin
-        if (!$user || !$user->hasRole('super_admin')) {
+        if (! $user || ! $user->hasRole('super_admin')) {
             return [];
         }
 
         $analyticsService = app(AnalyticsService::class);
-        
+
         // Get date range based on filter
         [$startDate, $endDate] = $this->getDateRange();
-        
+
         $metrics = $analyticsService->getGlobalMetrics($startDate, $endDate);
 
         return [
@@ -38,19 +38,19 @@ class GlobalStatsOverviewWidget extends BaseWidget
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart($this->getTrafficTrend($startDate, $endDate)),
-            
+
             Stat::make('Total Leads', number_format($metrics['total_leads']))
                 ->description('New leads generated')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('warning')
                 ->chart($this->getLeadsTrend($startDate, $endDate)),
-            
+
             Stat::make('Active Affiliates', number_format($metrics['active_affiliates']))
                 ->description('Affiliates with activity')
                 ->descriptionIcon('heroicon-m-users')
                 ->color('info'),
-            
-            Stat::make('Conversion Rate', $metrics['conversion_rate'] . '%')
+
+            Stat::make('Conversion Rate', $metrics['conversion_rate'].'%')
                 ->description('Leads / Visits')
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color('primary'),
@@ -64,6 +64,7 @@ class GlobalStatsOverviewWidget extends BaseWidget
             'week' => 'This Week',
             'month' => 'This Month',
             'year' => 'This Year',
+            'all' => 'All Time',
         ];
     }
 
@@ -74,6 +75,7 @@ class GlobalStatsOverviewWidget extends BaseWidget
             'week' => [Carbon::now()->startOfWeek(), Carbon::now()],
             'month' => [Carbon::now()->startOfMonth(), Carbon::now()],
             'year' => [Carbon::now()->startOfYear(), Carbon::now()],
+            'all' => [Carbon::create(2000, 1, 1), Carbon::now()],
             default => [Carbon::today(), Carbon::now()],
         };
     }
@@ -89,6 +91,7 @@ class GlobalStatsOverviewWidget extends BaseWidget
                 ->count();
             $days[] = $count;
         }
+
         return $days;
     }
 
@@ -103,6 +106,7 @@ class GlobalStatsOverviewWidget extends BaseWidget
                 ->count();
             $days[] = $count;
         }
+
         return $days;
     }
 
@@ -110,6 +114,7 @@ class GlobalStatsOverviewWidget extends BaseWidget
     {
         /** @var \App\Models\User|null $user */
         $user = Auth::user();
+
         return $user && $user->hasRole('super_admin');
     }
 }

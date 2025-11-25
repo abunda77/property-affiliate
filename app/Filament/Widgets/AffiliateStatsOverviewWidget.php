@@ -12,22 +12,22 @@ class AffiliateStatsOverviewWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
 
-    public ?string $filter = 'today';
+    public ?string $filter = 'all';
 
     protected function getStats(): array
     {
         $user = Auth::user();
-        
+
         // Only show for affiliates
-        if (!$user || !$user->affiliate_code) {
+        if (! $user || ! $user->affiliate_code) {
             return [];
         }
 
         $analyticsService = app(AnalyticsService::class);
-        
+
         // Get date range based on filter
         [$startDate, $endDate] = $this->getDateRange();
-        
+
         $metrics = $analyticsService->getAffiliateMetrics($user, $startDate, $endDate);
 
         return [
@@ -35,13 +35,13 @@ class AffiliateStatsOverviewWidget extends BaseWidget
                 ->description('Total visits')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
-            
+
             Stat::make('Leads', $metrics['total_leads'])
                 ->description('New leads')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('warning'),
-            
-            Stat::make('Conversion Rate', $metrics['conversion_rate'] . '%')
+
+            Stat::make('Conversion Rate', $metrics['conversion_rate'].'%')
                 ->description('Leads / Visits')
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color('info'),
@@ -55,6 +55,7 @@ class AffiliateStatsOverviewWidget extends BaseWidget
             'week' => 'This Week',
             'month' => 'This Month',
             'year' => 'This Year',
+            'all' => 'All Time',
         ];
     }
 
@@ -65,6 +66,7 @@ class AffiliateStatsOverviewWidget extends BaseWidget
             'week' => [Carbon::now()->startOfWeek(), Carbon::now()],
             'month' => [Carbon::now()->startOfMonth(), Carbon::now()],
             'year' => [Carbon::now()->startOfYear(), Carbon::now()],
+            'all' => [Carbon::create(2000, 1, 1), Carbon::now()],
             default => [Carbon::today(), Carbon::now()],
         };
     }
@@ -72,6 +74,7 @@ class AffiliateStatsOverviewWidget extends BaseWidget
     public static function canView(): bool
     {
         $user = Auth::user();
+
         return $user && $user->affiliate_code !== null;
     }
 }

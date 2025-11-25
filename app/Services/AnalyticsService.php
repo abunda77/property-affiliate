@@ -23,7 +23,10 @@ class AnalyticsService
         // Cache affiliate analytics for 15 minutes
         $cacheKey = "affiliate_metrics_{$affiliate->id}_{$startDate->format('Y-m-d')}_{$endDate->format('Y-m-d')}";
         
-        return Cache::remember($cacheKey, 900, function () use ($affiliate, $startDate, $endDate) {
+        // Cache duration: 15 minutes in production, 0 (no cache) in local/debug
+        $cacheDuration = app()->isProduction() ? 900 : 0;
+        
+        return Cache::remember($cacheKey, $cacheDuration, function () use ($affiliate, $startDate, $endDate) {
             $totalVisits = $this->getTotalVisits($affiliate, $startDate, $endDate);
             $totalLeads = $this->getTotalLeads($affiliate, $startDate, $endDate);
             
@@ -62,9 +65,19 @@ class AnalyticsService
      */
     private function getTotalLeads(User $affiliate, Carbon $startDate, Carbon $endDate): int
     {
-        return $affiliate->leads()
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->count();
+        $query = $affiliate->leads()
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        \Illuminate\Support\Facades\Log::info('Affiliate Leads Debug', [
+            'affiliate_id' => $affiliate->id,
+            'start' => $startDate->toDateTimeString(),
+            'end' => $endDate->toDateTimeString(),
+            'count' => $query->count(),
+            'sql' => $query->toSql(),
+            'bindings' => $query->getBindings(),
+        ]);
+
+        return $query->count();
     }
 
     /**
