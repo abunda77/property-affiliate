@@ -135,7 +135,7 @@ class Settings extends SettingsPage
                     ->columns(2),
 
                 Section::make('Logo & Branding')
-                    ->description('Upload logo untuk ditampilkan di header dan footer website')
+                    ->description('Upload logo dan favicon untuk ditampilkan di website')
                     ->schema([
                         FileUpload::make('logo_path')
                             ->label('Logo Website')
@@ -159,7 +159,16 @@ class Settings extends SettingsPage
                             ->placeholder('https://example.com')
                             ->maxLength(255)
                             ->columnSpanFull(),
-                    ]),
+                        FileUpload::make('favicon_path')
+                            ->label('Favicon Website')
+                            ->acceptedFileTypes(['image/x-icon', 'image/vnd.microsoft.icon', 'image/png', 'image/jpeg', 'image/jpg'])
+                            ->directory('favicons')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->maxSize(1024)
+                            ->helperText('Upload favicon dalam format ICO, PNG, atau JPG (maksimal 1MB). Ukuran yang disarankan: 16x16, 32x32, atau 48x48 pixels')
+                            ->columnSpanFull(),
+                    ])->columns(2),
 
                 Section::make('Pengaturan SEO')
                     ->description('Konfigurasi meta tags untuk optimasi mesin pencari')

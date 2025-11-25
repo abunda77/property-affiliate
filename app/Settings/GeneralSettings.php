@@ -15,6 +15,7 @@ class GeneralSettings extends Settings
     // Logo
     public ?string $logo_path;
     public ?string $logo_url;
+    public ?string $favicon_path;
 
     // SEO Settings
     public ?string $seo_meta_title;

@@ -12,8 +12,17 @@
     <title>Katalog Properti - {{ $settings->seo_meta_title ?? config('app.name', 'PAMS') }}</title>
     
     <!-- Favicon -->
-    @if($settings->logo_path)
-        <link rel="icon" type="image/x-icon" href="{{ Storage::url($settings->logo_path) }}">
+    @if($settings->favicon_path)
+        @php
+            $faviconExtension = pathinfo($settings->favicon_path, PATHINFO_EXTENSION);
+            $faviconType = match($faviconExtension) {
+                'ico' => 'image/x-icon',
+                'png' => 'image/png',
+                'jpg', 'jpeg' => 'image/jpeg',
+                default => 'image/x-icon'
+            };
+        @endphp
+        <link rel="icon" type="{{ $faviconType }}" href="{{ Storage::url($settings->favicon_path) }}">
     @endif
 
     <!-- Fonts -->

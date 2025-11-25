@@ -12,8 +12,17 @@
     <title>{{ $slug }} - {{ $settings->seo_meta_title ?? config('app.name', 'PAMS') }}</title>
     
     <!-- Favicon -->
-    @if($settings->logo_path)
-        <link rel="icon" type="image/x-icon" href="{{ Storage::url($settings->logo_path) }}">
+    @if($settings->favicon_path)
+        @php
+            $faviconExtension = pathinfo($settings->favicon_path, PATHINFO_EXTENSION);
+            $faviconType = match($faviconExtension) {
+                'ico' => 'image/x-icon',
+                'png' => 'image/png',
+                'jpg', 'jpeg' => 'image/jpeg',
+                default => 'image/x-icon'
+            };
+        @endphp
+        <link rel="icon" type="{{ $faviconType }}" href="{{ Storage::url($settings->favicon_path) }}">
     @endif
 
     <!-- Fonts -->
@@ -32,7 +41,7 @@
                 <div class="flex items-center">
                     @if($settings->logo_path)
                         <a href="{{ $settings->logo_url ?: route('properties.index') }}" class="flex items-center">
-                            <img src="{{ Storage::url($settings->logo_path) }}" alt="{{ $settings->seo_meta_title ?? config('app.name', 'PAMS') }}" class="h-16w-auto">
+                            <img src="{{ Storage::url($settings->logo_path) }}" alt="{{ $settings->seo_meta_title ?? config('app.name', 'PAMS') }}" class="h-16 w-auto">
                         </a>
                     @else
                         <a href="{{ route('properties.index') }}" class="text-2xl font-bold text-blue-600">
