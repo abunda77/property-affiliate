@@ -14,6 +14,7 @@ class PropertyDetail extends Component
     public array $seoMetaTags = [];
     public array $structuredData = [];
     public ?User $affiliate = null;
+    public ?User $superAdmin = null;
 
     public function mount(string $slug, SeoService $seoService)
     {
@@ -31,6 +32,9 @@ class PropertyDetail extends Component
         if ($affiliateId) {
             $this->affiliate = User::find($affiliateId);
         }
+
+        // Get super admin for fallback contact
+        $this->superAdmin = User::role('super_admin')->first();
     }
 
     public function render()
