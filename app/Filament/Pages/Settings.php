@@ -204,6 +204,91 @@ class Settings extends SettingsPage
                             ->maxLength(20),
                     ])
                     ->columns(2),
+
+                Section::make('Tentang Kami')
+                    ->description('Konten untuk halaman Tentang Kami')
+                    ->schema([
+                        \Filament\Forms\Components\RichEditor::make('about_us')
+                            ->label('Konten About Us')
+                            ->toolbarButtons([
+                                'bold',
+                                'italic',
+                                'underline',
+                                'strike',
+                                'link',
+                                'h2',
+                                'h3',
+                                'bulletList',
+                                'orderedList',
+                                'blockquote',
+                                'codeBlock',
+                                'undo',
+                                'redo',
+                            ])
+                            ->columnSpanFull(),
+                    ]),
+
+                Section::make('Dokumen Legal')
+                    ->description('Konten untuk halaman legal yang ditampilkan di footer website')
+                    ->schema([
+                        \Filament\Forms\Components\RichEditor::make('terms_and_conditions')
+                            ->label('Syarat & Ketentuan')
+                            ->helperText('Konten untuk halaman Syarat & Ketentuan')
+                            ->toolbarButtons([
+                                'bold',
+                                'italic',
+                                'underline',
+                                'strike',
+                                'link',
+                                'h2',
+                                'h3',
+                                'bulletList',
+                                'orderedList',
+                                'blockquote',
+                                'codeBlock',
+                                'undo',
+                                'redo',
+                            ])
+                            ->columnSpanFull(),
+                        \Filament\Forms\Components\RichEditor::make('privacy_policy')
+                            ->label('Kebijakan Privasi')
+                            ->helperText('Konten untuk halaman Kebijakan Privasi')
+                            ->toolbarButtons([
+                                'bold',
+                                'italic',
+                                'underline',
+                                'strike',
+                                'link',
+                                'h2',
+                                'h3',
+                                'bulletList',
+                                'orderedList',
+                                'blockquote',
+                                'codeBlock',
+                                'undo',
+                                'redo',
+                            ])
+                            ->columnSpanFull(),
+                        \Filament\Forms\Components\RichEditor::make('disclaimer')
+                            ->label('Disclaimer')
+                            ->helperText('Konten untuk halaman Disclaimer')
+                            ->toolbarButtons([
+                                'bold',
+                                'italic',
+                                'underline',
+                                'strike',
+                                'link',
+                                'h2',
+                                'h3',
+                                'bulletList',
+                                'orderedList',
+                                'blockquote',
+                                'codeBlock',
+                                'undo',
+                                'redo',
+                            ])
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 }

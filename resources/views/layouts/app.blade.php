@@ -57,7 +57,7 @@
                 <div class="flex items-center flex-shrink-0">
                     <a href="{{ ($settings && $settings->logo_url) ? $settings->logo_url : route('properties.index') }}" class="flex items-center gap-2 group">
                         @if($settings && $settings->logo_path)
-                            <img src="{{ Storage::url($settings->logo_path) }}" alt="{{ $settings->seo_meta_title ?? 'PAMS' }}" class="h-10 w-auto brightness-0 invert">
+                            <img src="{{ Storage::url($settings->logo_path) }}" alt="{{ $settings->seo_meta_title ?? 'PAMS' }}" class="h-20 w-auto brightness-0 invert">
                         @else
                             <div class="bg-blue-600 p-2 rounded-lg">
                                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,8 +73,7 @@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="{{ route('properties.index') }}" class="text-gray-300 hover:text-white font-medium transition-colors text-sm uppercase tracking-wider">Beranda</a>
                     <a href="{{ route('properties.index') }}" class="text-white font-medium transition-colors text-sm uppercase tracking-wider">Katalog</a>
-                    <a href="#" class="text-gray-300 hover:text-white font-medium transition-colors text-sm uppercase tracking-wider">Tentang Kami</a>
-                    <a href="#" class="text-gray-300 hover:text-white font-medium transition-colors text-sm uppercase tracking-wider">Blog</a>
+                    <a href="{{ route('about-us') }}" class="text-gray-300 hover:text-white font-medium transition-colors text-sm uppercase tracking-wider">Tentang Kami</a>                    
                     <a href="#" class="text-gray-300 hover:text-white font-medium transition-colors text-sm uppercase tracking-wider">Kontak</a>
                 </div>
 
@@ -173,9 +172,9 @@
                 <div>
                     <h3 class="text-lg font-bold mb-6">Legal</h3>
                     <ul class="space-y-4">
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">Syarat & Ketentuan</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">Kebijakan Privasi</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">Disclaimer</a></li>
+                        <li><a href="{{ route('legal.terms') }}" class="text-gray-400 hover:text-blue-400 transition-colors">Syarat & Ketentuan</a></li>
+                        <li><a href="{{ route('legal.privacy') }}" class="text-gray-400 hover:text-blue-400 transition-colors">Kebijakan Privasi</a></li>
+                        <li><a href="{{ route('legal.disclaimer') }}" class="text-gray-400 hover:text-blue-400 transition-colors">Disclaimer</a></li>
                     </ul>
                 </div>
 

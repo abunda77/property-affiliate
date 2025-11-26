@@ -17,6 +17,23 @@ Route::get('/p/{slug}', function ($slug) {
     return view('properties.show', ['slug' => $slug]);
 })->name('property.show');
 
+// Legal pages routes
+Route::get('/terms-and-conditions', function () {
+    return view('legal.terms');
+})->name('legal.terms');
+
+Route::get('/privacy-policy', function () {
+    return view('legal.privacy');
+})->name('legal.privacy');
+
+Route::get('/disclaimer', function () {
+    return view('legal.disclaimer');
+})->name('legal.disclaimer');
+
+Route::get('/about-us', function () {
+    return view('about-us');
+})->name('about-us');
+
 // Referral redirect route - redirects to property catalog with affiliate tracking
 Route::get('/ref/{affiliate_code}', function ($affiliate_code) {
     // Validate affiliate code exists

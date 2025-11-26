@@ -26,6 +26,12 @@ class GeneralSettings extends Settings
     public ?string $contact_email;
     public ?string $contact_whatsapp;
 
+    // Legal Documents
+    public ?string $terms_and_conditions;
+    public ?string $privacy_policy;
+    public ?string $disclaimer;
+    public ?string $about_us;
+
     public static function group(): string
     {
         return 'general';
