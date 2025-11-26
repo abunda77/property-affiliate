@@ -14,6 +14,8 @@ class AffiliateStatsOverviewWidget extends BaseWidget
 
     public ?string $filter = 'all';
 
+    protected int | string | array $columnSpan = 'full';
+
     protected function getStats(): array
     {
         $user = Auth::user();
