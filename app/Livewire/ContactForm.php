@@ -78,7 +78,8 @@ class ContactForm extends Component
         $this->reset(['name', 'whatsapp', 'message']);
 
         // Redirect to show success message
-        $this->redirect(request()->header('referer'));
+        // Redirect removed to prevent page refresh
+        // $this->redirect(request()->header('referer'));
     }
 
     public function render()

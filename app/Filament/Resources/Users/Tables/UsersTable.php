@@ -6,6 +6,7 @@ use App\Enums\UserStatus;
 use App\Notifications\AffiliateApprovedNotification;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -21,7 +22,7 @@ class UsersTable
                 ImageColumn::make('profile_photo')
                     ->circular()
                     ->label('Photo')
-                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&color=7F9CF5&background=EBF4FF'),
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name='.urlencode($record->name).'&color=7F9CF5&background=EBF4FF'),
 
                 TextColumn::make('name')
                     ->searchable()
@@ -76,7 +77,7 @@ class UsersTable
                         UserStatus::BLOCKED->value => 'Blocked',
                     ])
                     ->label('Status'),
-                
+
                 SelectFilter::make('roles')
                     ->relationship('roles', 'name')
                     ->multiple()
@@ -84,11 +85,12 @@ class UsersTable
                     ->label('Roles'),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make()
                     ->label('Edit')
                     ->icon('heroicon-o-pencil')
                     ->color('primary'),
-                
+
                 Action::make('approve')
                     ->label('Approve')
                     ->icon('heroicon-o-check-circle')
@@ -101,22 +103,22 @@ class UsersTable
                     ->action(function ($record) {
                         // Approve user and generate affiliate code
                         $record->approve();
-                        
+
                         // Assign Affiliate role if not already assigned
-                        if (!$record->hasRole('affiliate')) {
+                        if (! $record->hasRole('affiliate')) {
                             $record->assignRole('affiliate');
                         }
-                        
+
                         // Send welcome email with affiliate code
                         $record->notify(new AffiliateApprovedNotification($record));
-                        
+
                         Notification::make()
                             ->title('User Approved')
                             ->body("User {$record->name} has been approved and notified.")
                             ->success()
                             ->send();
                     }),
-                
+
                 Action::make('block')
                     ->label('Block')
                     ->icon('heroicon-o-no-symbol')
@@ -128,14 +130,14 @@ class UsersTable
                     ->visible(fn ($record) => $record->status !== UserStatus::BLOCKED)
                     ->action(function ($record) {
                         $record->block();
-                        
+
                         Notification::make()
                             ->title('User Blocked')
                             ->body("User {$record->name} has been blocked.")
                             ->success()
                             ->send();
                     }),
-                
+
                 Action::make('unblock')
                     ->label('Unblock')
                     ->icon('heroicon-o-check-circle')
@@ -148,7 +150,7 @@ class UsersTable
                     ->action(function ($record) {
                         $record->status = UserStatus::ACTIVE;
                         $record->save();
-                        
+
                         Notification::make()
                             ->title('User Unblocked')
                             ->body("User {$record->name} has been unblocked.")

@@ -46,11 +46,12 @@ class ProfileSettings extends Page implements HasSchemas
     {
         /** @var User $user */
         $user = Filament::auth()->user();
-        
+
         $this->schema->fill([
             'name' => $user->name,
             'whatsapp' => $user->whatsapp,
             'profile_photo' => $user->profile_photo,
+            'biodata' => $user->biodata,
         ]);
     }
 
@@ -69,27 +70,24 @@ class ProfileSettings extends Page implements HasSchemas
 
                         TextInput::make('whatsapp')
                             ->label('Nomor WhatsApp')
-                            ->required()
                             ->tel()
-                            ->regex('/^[0-9]{10,15}$/')
-                            ->placeholder('08123456789')
-                            ->helperText('Format: 08123456789 (10-15 digit angka)')
-                            ->validationMessages([
-                                'regex' => 'Nomor WhatsApp harus berupa 10-15 digit angka tanpa spasi atau karakter khusus.',
-                            ]),
+                            ->maxLength(20)
+                            ->placeholder('+62812345678')
+                            ->helperText('Format: 08123456789 (10-15 digit angka)'),
 
                         FileUpload::make('profile_photo')
                             ->label('Foto Profil')
                             ->image()
-                            ->imageEditor()
-                            ->imageEditorAspectRatios([
-                                '1:1',
-                            ])
                             ->maxSize(2048)
                             ->disk('public')
                             ->directory('profile-photos')
                             ->visibility('public')
-                            ->helperText('Upload foto profil Anda (maksimal 2MB). Foto akan ditampilkan pada halaman properti yang Anda promosikan.')
+                            ->imageEditor()
+                            ->circleCropper()
+                            ->helperText('Upload foto profil Anda (maksimal 2MB). Foto akan ditampilkan pada halaman properti yang Anda promosikan.'),
+
+                        \Filament\Forms\Components\RichEditor::make('biodata')
+                            ->label('Biodata')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
@@ -109,15 +107,18 @@ class ProfileSettings extends Page implements HasSchemas
     public function save(): void
     {
         $data = $this->schema->getState();
-        
+
         /** @var User $user */
         $user = Filament::auth()->user();
-        
+
         $user->name = $data['name'];
         $user->whatsapp = $data['whatsapp'];
+        $user->biodata = $data['biodata'];
+
         if (isset($data['profile_photo'])) {
             $user->profile_photo = $data['profile_photo'];
         }
+
         $user->save();
 
         Notification::make()
@@ -131,6 +132,7 @@ class ProfileSettings extends Page implements HasSchemas
     {
         /** @var User|null $user */
         $user = Filament::auth()->user();
+
         // Only show for affiliates (users with affiliate_code)
         return $user !== null && $user->affiliate_code !== null;
     }

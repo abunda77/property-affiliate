@@ -30,6 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'affiliate_code',
         'status',
         'profile_photo',
+        'biodata',
     ];
 
     /**

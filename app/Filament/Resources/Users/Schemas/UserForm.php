@@ -4,9 +4,10 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use App\Enums\UserStatus;
 use Filament\Forms\Components\FileUpload;
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Spatie\Permission\Models\Role;
 
@@ -73,6 +74,10 @@ class UserForm
                             ->label('Profile Photo')
                             ->imageEditor()
                             ->circleCropper(),
+
+                        RichEditor::make('biodata')
+                            ->label('Biodata')
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
 

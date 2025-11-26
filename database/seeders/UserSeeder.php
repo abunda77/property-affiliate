@@ -73,6 +73,7 @@ class UserSeeder extends Seeder
                     'whatsapp' => $affiliateData['whatsapp'],
                     'affiliate_code' => $affiliateData['affiliate_code'],
                     'status' => UserStatus::ACTIVE,
+                    'biodata' => 'This is a sample biodata for ' . $affiliateData['name'],
                 ]
             );
 

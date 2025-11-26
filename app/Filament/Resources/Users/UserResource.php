@@ -33,6 +33,41 @@ class UserResource extends Resource
         return UsersTable::configure($table);
     }
 
+    public static function infolist(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
+    {
+        return $schema
+            ->components([
+                \Filament\Schemas\Components\Section::make('User Information')
+                    ->schema([
+                        \Filament\Infolists\Components\ImageEntry::make('profile_photo')
+                            ->circular()
+                            ->label('Photo')
+                            ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&color=7F9CF5&background=EBF4FF'),
+                        \Filament\Infolists\Components\TextEntry::make('name'),
+                        \Filament\Infolists\Components\TextEntry::make('email'),
+                        \Filament\Infolists\Components\TextEntry::make('whatsapp'),
+                        \Filament\Infolists\Components\TextEntry::make('roles.name')
+                            ->badge()
+                            ->color('info')
+                            ->formatStateUsing(fn ($state) => ucfirst($state))
+                            ->separator(','),
+                        \Filament\Infolists\Components\TextEntry::make('status')
+                            ->badge()
+                            ->color(fn (\App\Enums\UserStatus $state): string => match ($state) {
+                                \App\Enums\UserStatus::PENDING => 'warning',
+                                \App\Enums\UserStatus::ACTIVE => 'success',
+                                \App\Enums\UserStatus::BLOCKED => 'danger',
+                            }),
+                        \Filament\Infolists\Components\TextEntry::make('affiliate_code')
+                            ->placeholder('Not assigned'),
+                        \Filament\Infolists\Components\TextEntry::make('biodata')
+                            ->html()
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
+            ]);
+    }
+
     public static function getRelations(): array
     {
         return [
