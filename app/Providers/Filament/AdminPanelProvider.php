@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(\App\Filament\Pages\Auth\Login::class)
             ->brandName('Properti Affiliate System')
             ->brandLogo(fn () => ($path = app(\App\Settings\GeneralSettings::class)->logo_path) ? \Illuminate\Support\Facades\Storage::disk('public')->url($path) : '/images/logo.png')
             ->brandLogoHeight('5rem')

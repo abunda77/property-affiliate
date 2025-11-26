@@ -19,19 +19,23 @@ class CheckUserStatus
     {
         if (Auth::check()) {
             $user = Auth::user();
-            
+
             // Check if user is blocked
             if ($user->status === UserStatus::BLOCKED) {
+                // Store error message before logout
+                $errorMessage = 'Your account has been blocked. Please contact the administrator.';
+                
                 Auth::logout();
                 
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
                 
+                // Flash error message after session regeneration
                 return redirect()->route('filament.admin.auth.login')
-                    ->with('error', 'Your account has been blocked. Please contact the administrator.');
+                    ->with('error', $errorMessage);
             }
         }
-        
+
         return $next($request);
     }
 }
