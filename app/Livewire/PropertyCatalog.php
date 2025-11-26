@@ -60,69 +60,55 @@ class PropertyCatalog extends Component
 
     public function render()
     {
-        // Generate cache key based on filters and pagination
-        $page = request()->get('page', 1);
-        $cacheKey = 'property_catalog_' . md5(
-            $this->search . 
-            $this->location . 
-            $this->minPrice . 
-            $this->maxPrice . 
-            $this->sortBy . 
-            $page
-        );
+        // Start with published properties and eager load media to prevent N+1
+        $query = Property::published()->with('media');
 
-        // Cache property listings for 5 minutes
-        $properties = Cache::remember($cacheKey, 300, function () {
-            // Start with published properties and eager load media to prevent N+1
-            $query = Property::published()->with('media');
-
-            // Apply search using Laravel Scout
-            if (!empty($this->search)) {
-                // Use Scout search and get IDs
-                $searchResults = Property::search($this->search)
-                    ->query(fn ($builder) => $builder->where('status', 'published'))
-                    ->get()
-                    ->pluck('id');
-                
-                // If search returns results, filter by those IDs
-                if ($searchResults->isNotEmpty()) {
-                    $query->whereIn('id', $searchResults);
-                } else {
-                    // No results found, return empty collection
-                    $query->whereRaw('1 = 0');
-                }
+        // Apply search using Laravel Scout
+        if (!empty($this->search)) {
+            // Use Scout search and get IDs
+            $searchResults = Property::search($this->search)
+                ->query(fn ($builder) => $builder->where('status', 'published'))
+                ->get()
+                ->pluck('id');
+            
+            // If search returns results, filter by those IDs
+            if ($searchResults->isNotEmpty()) {
+                $query->whereIn('id', $searchResults);
+            } else {
+                // No results found, return empty collection
+                $query->whereRaw('1 = 0');
             }
+        }
 
-            // Apply location filter
-            if (!empty($this->location)) {
-                $query->where('location', 'like', '%' . $this->location . '%');
-            }
+        // Apply location filter
+        if (!empty($this->location)) {
+            $query->where('location', 'like', '%' . $this->location . '%');
+        }
 
-            // Apply price range filter
-            if ($this->minPrice !== null) {
-                $query->where('price', '>=', $this->minPrice);
-            }
+        // Apply price range filter
+        if ($this->minPrice !== null) {
+            $query->where('price', '>=', $this->minPrice);
+        }
 
-            if ($this->maxPrice !== null) {
-                $query->where('price', '<=', $this->maxPrice);
-            }
+        if ($this->maxPrice !== null) {
+            $query->where('price', '<=', $this->maxPrice);
+        }
 
-            // Apply sorting
-            switch ($this->sortBy) {
-                case 'lowest_price':
-                    $query->orderBy('price', 'asc');
-                    break;
-                case 'highest_price':
-                    $query->orderBy('price', 'desc');
-                    break;
-                case 'newest':
-                default:
-                    $query->orderBy('created_at', 'desc');
-                    break;
-            }
+        // Apply sorting
+        switch ($this->sortBy) {
+            case 'lowest_price':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'highest_price':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
 
-            return $query->paginate(12);
-        });
+        $properties = $query->paginate(12);
 
         return view('livewire.property-catalog', [
             'properties' => $properties,
