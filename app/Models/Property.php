@@ -29,6 +29,7 @@ class Property extends Model implements HasMedia
         'features',
         'specs',
         'status',
+        'listing_type',
     ];
 
     /**

@@ -88,8 +88,8 @@
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl">
                     <div class="flex items-center gap-2 text-blue-400 font-semibold mb-2">
-                        <span class="bg-blue-600/20 backdrop-blur-md px-3 py-1 rounded-full text-sm border border-blue-500/30">
-                            Dijual
+                        <span class="{{ $property->listing_type == 'sale' ? 'bg-blue-600/20 border-blue-500/30' : 'bg-purple-600/20 border-purple-500/30' }} backdrop-blur-md px-3 py-1 rounded-full text-sm border">
+                            {{ $property->listing_type == 'sale' ? 'Dijual' : 'Disewakan' }}
                         </span>
                         <span class="flex items-center text-gray-300 text-sm">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>

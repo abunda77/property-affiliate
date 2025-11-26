@@ -39,6 +39,14 @@ class PropertyInfolist
                             TextEntry::make('location')
                                 ->label('Location'),
 
+                            TextEntry::make('listing_type')
+                                ->badge()
+                                ->color(fn (string $state): string => match ($state) {
+                                    'sale' => 'info',
+                                    'rent' => 'warning',
+                                })
+                                ->formatStateUsing(fn (string $state): string => $state === 'sale' ? 'Dijual' : 'Disewakan'),
+
                             TextEntry::make('status')
                                 ->badge()
                                 ->colors([

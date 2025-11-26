@@ -61,6 +61,7 @@ class PropertySeeder extends Seeder
                     'Sertifikat' => 'SHM',
                 ],
                 'status' => PropertyStatus::PUBLISHED,
+                'listing_type' => 'rent',
             ],
             [
                 'title' => 'Apartemen Luxury di Sudirman Jakarta',
@@ -175,6 +176,7 @@ class PropertySeeder extends Seeder
                     'Sertifikat' => 'SHM',
                 ],
                 'status' => PropertyStatus::PUBLISHED,
+                'listing_type' => 'rent',
             ],
             [
                 'title' => 'Rumah Klasik di Menteng Dalam',
@@ -330,6 +332,7 @@ class PropertySeeder extends Seeder
                     'Sertifikat' => 'Strata Title',
                 ],
                 'status' => PropertyStatus::DRAFT,
+                'listing_type' => 'rent',
             ],
             [
                 'title' => 'Ruko Strategis di Gading Serpong',
@@ -466,6 +469,7 @@ class PropertySeeder extends Seeder
                     'features' => $propertyData['features'],
                     'specs' => $propertyData['specs'],
                     'status' => $propertyData['status'],
+                    'listing_type' => $propertyData['listing_type'] ?? 'sale',
                 ]);
 
                 $this->command->info("Created property: {$propertyData['title']}");

@@ -38,6 +38,14 @@ class PropertiesTable
                     ->sortable()
                     ->alignEnd(),
 
+                Tables\Columns\TextColumn::make('listing_type')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'sale' => 'info',
+                        'rent' => 'warning',
+                    })
+                    ->formatStateUsing(fn (string $state): string => $state === 'sale' ? 'Dijual' : 'Disewakan'),
+
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
                         'secondary' => PropertyStatus::DRAFT->value,

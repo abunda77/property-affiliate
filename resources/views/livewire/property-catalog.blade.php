@@ -184,8 +184,8 @@
                                         
                                         <!-- Badge -->
                                         <div class="absolute top-4 left-4">
-                                            <span class="bg-white/90 backdrop-blur-sm text-blue-600 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                                                Dijual
+                                            <span class="bg-white/90 backdrop-blur-sm {{ $property->listing_type == 'sale' ? 'text-blue-600' : 'text-purple-600' }} text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                                                {{ $property->listing_type == 'sale' ? 'Dijual' : 'Disewakan' }}
                                             </span>
                                         </div>
                                         

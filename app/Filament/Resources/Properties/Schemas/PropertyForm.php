@@ -10,6 +10,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
@@ -59,6 +60,20 @@ class PropertyForm
                             ])
                             ->default(PropertyStatus::DRAFT->value)
                             ->native(false),
+
+                        ToggleButtons::make('listing_type')
+                            ->label('Listing Type')
+                            ->hiddenLabel()
+                            ->options([
+                                'sale' => 'Dijual',
+                                'rent' => 'Disewakan',
+                            ])
+                            ->colors([
+                                'sale' => 'primary',
+                                'rent' => 'warning',
+                            ])
+                            ->default('sale')
+                            ->inline(),
                     ])
                     ->columns(2),
 
