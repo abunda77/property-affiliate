@@ -79,7 +79,7 @@
         <button 
             type="submit"
             wire:loading.attr="disabled"
-            class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors flex items-center justify-center text-sm sm:text-base min-h-[44px]"
+            class="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors flex items-center justify-center text-sm sm:text-base min-h-[44px]"
             aria-label="Kirim formulir kontak"
         >
             <span wire:loading.remove class="flex items-center justify-center">
