@@ -18,6 +18,7 @@ class PropertyFactory extends Factory
             'price' => fake()->numberBetween(500000000, 5000000000),
             'location' => fake()->city().', '.fake()->state(),
             'description' => fake()->paragraphs(3, true),
+            'notes' => fake()->optional(0.7)->sentence(10),
             'features' => [
                 ['feature' => 'Swimming Pool'],
                 ['feature' => 'Garden'],

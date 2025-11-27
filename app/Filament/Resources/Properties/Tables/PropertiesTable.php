@@ -10,6 +10,8 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+
 
 class PropertiesTable
 {
@@ -54,6 +56,13 @@ class PropertiesTable
                     ])
                     ->formatStateUsing(fn (PropertyStatus $state): string => ucfirst($state->value)),
 
+                Tables\Columns\TextColumn::make('notes')
+                    ->limit(50)
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->tooltip(fn ($record) => $record->notes)
+                    ->visible(fn () => Auth::user()?->hasRole('super_admin')),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -78,11 +87,11 @@ class PropertiesTable
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])
+            // ->toolbarActions([
+            //     BulkActionGroup::make([
+            //         DeleteBulkAction::make(),
+            //     ]),
+            // ])
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(function ($query) {
                 // Eager load media to prevent N+1 queries

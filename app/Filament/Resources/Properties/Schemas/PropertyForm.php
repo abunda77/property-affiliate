@@ -9,6 +9,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
@@ -74,6 +75,13 @@ class PropertyForm
                             ])
                             ->default('sale')
                             ->inline(),
+                        
+                         Textarea::make('notes')
+                            ->label('Internal Notes')
+                            ->rows(3)
+                            ->columnSpanFull()
+                            ->helperText('Internal notes for admin use only (not visible to public)')
+                            ->visible(fn () => auth()->user()?->hasRole('super_admin')),
                     ])
                     ->columns(2),
 
@@ -92,6 +100,8 @@ class PropertyForm
                                 'h3',
                                 'link',
                             ]),
+
+                       
                     ]),
 
                 Section::make('Features')

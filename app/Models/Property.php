@@ -26,6 +26,7 @@ class Property extends Model implements HasMedia
         'price',
         'location',
         'description',
+        'notes',
         'features',
         'specs',
         'status',
