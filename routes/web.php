@@ -34,6 +34,10 @@ Route::get('/about-us', function () {
     return view('about-us');
 })->name('about-us');
 
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
 // Referral redirect route - redirects to property catalog with affiliate tracking
 Route::get('/ref/{affiliate_code}', function ($affiliate_code) {
     // Validate affiliate code exists
