@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
@@ -22,6 +22,12 @@ class RoleSeeder extends Seeder
             ['guard_name' => 'web']
         );
 
+        // Create Admin role
+        $adminRole = Role::firstOrCreate(
+            ['name' => 'admin'],
+            ['guard_name' => 'web']
+        );
+
         // Create Affiliate role
         $affiliateRole = Role::firstOrCreate(
             ['name' => 'affiliate'],
@@ -31,16 +37,25 @@ class RoleSeeder extends Seeder
         // Super Admin gets all permissions
         $superAdminRole->givePermissionTo(Permission::all());
 
+        // Admin gets most permissions except user management and critical settings
+        $adminPermissions = Permission::all()->filter(function ($permission) {
+            // Exclude user management and shield permissions
+            return ! str_contains($permission->name, 'user') &&
+                   ! str_contains($permission->name, 'shield') &&
+                   ! str_contains($permission->name, 'role');
+        });
+        $adminRole->givePermissionTo($adminPermissions);
+
         // Affiliate gets limited permissions for dashboard and leads access
         $affiliatePermissions = [
             // Lead management permissions
             'view_any_lead',
             'view_lead',
             'update_lead',
-            
+
             // Dashboard access (page permissions)
             'page_Dashboard',
-            
+
             // Widget permissions (if any exist)
             'widget_AccountWidget',
         ];
@@ -53,6 +68,7 @@ class RoleSeeder extends Seeder
 
         $this->command->info('Roles and permissions configured successfully!');
         $this->command->info('Super Admin role: All permissions granted');
+        $this->command->info('Admin role: Property, lead, and content management permissions granted');
         $this->command->info('Affiliate role: Dashboard and lead management permissions granted');
     }
 }

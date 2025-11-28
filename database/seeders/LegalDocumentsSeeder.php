@@ -10,8 +10,24 @@ class LegalDocumentsSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(GeneralSettings $settings): void
+    public function run(): void
     {
+        // Ensure settings exist to avoid MissingSettings exception
+        $keys = ['terms_and_conditions', 'privacy_policy', 'disclaimer', 'about_us'];
+        foreach ($keys as $key) {
+            if (!\Illuminate\Support\Facades\DB::table('settings')->where('group', 'general')->where('name', $key)->exists()) {
+                \Illuminate\Support\Facades\DB::table('settings')->insert([
+                    'group' => 'general',
+                    'name' => $key,
+                    'locked' => false,
+                    'payload' => json_encode(null),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        $settings = app(GeneralSettings::class);
         // Syarat & Ketentuan
         $settings->terms_and_conditions = '
             <h2>1. Pendahuluan</h2>

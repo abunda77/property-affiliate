@@ -12,7 +12,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
-
 class PropertiesTable
 {
     public static function configure(Table $table): Table
@@ -61,7 +60,7 @@ class PropertiesTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->tooltip(fn ($record) => $record->notes)
-                    ->visible(fn () => Auth::user()?->hasRole('super_admin')),
+                    ->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

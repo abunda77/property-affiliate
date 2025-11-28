@@ -1,122 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     <url>
-    <loc>http://localhost:8007/properties</loc>
-    <lastmod>2025-11-27T02:21:47+00:00</lastmod>
+    <loc>http://property-affiliate.test/properties</loc>
+    <lastmod>2025-11-28T06:35:02+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/rumah-cluster-di-bsd-tangerang</loc>
-    <lastmod>2025-11-26T10:10:17+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/rumah-mewah-di-menteng-jakarta-pusat</loc>
+    <lastmod>2025-11-28T06:35:02+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/apartemen-luxury-di-sudirman-jakarta</loc>
-    <lastmod>2025-11-26T10:09:56+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/villa-modern-di-ubud-bali</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/villa-modern-di-ubud-bali</loc>
-    <lastmod>2025-11-26T10:09:38+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/apartemen-luxury-di-sudirman-jakarta</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/rumah-mewah-di-menteng-jakarta-pusat</loc>
-    <lastmod>2025-11-26T10:09:15+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/rumah-cluster-di-bsd-tangerang</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/penthouse-mewah-di-scbd-jakarta</loc>
-    <lastmod>2025-11-26T10:01:10+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/townhouse-minimalis-di-kemang-jakarta</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/rumah-minimalis-di-cilandak-jakarta</loc>
-    <lastmod>2025-11-26T10:00:21+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/rumah-tropis-di-pondok-indah</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/villa-pantai-di-canggu-bali</loc>
-    <lastmod>2025-11-26T09:59:51+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/kost-eksklusif-di-senopati-jakarta</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/villa-terjual-di-seminyak-bali</loc>
-    <lastmod>2025-11-26T09:57:16+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/rumah-klasik-di-menteng-dalam</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/apartemen-terjual-di-thamrin</loc>
-    <lastmod>2025-11-26T09:56:05+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/rumah-modern-di-bintaro-sektor-9</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/rumah-dijual-cepat-di-kelapa-gading</loc>
-    <lastmod>2025-11-26T09:55:23+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/villa-pantai-di-canggu-bali</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/ruko-strategis-di-gading-serpong</loc>
-    <lastmod>2025-11-26T09:55:15+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/rumah-minimalis-di-cilandak-jakarta</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost:8007/p/apartemen-studio-di-kuningan</loc>
-    <lastmod>2025-11-26T09:54:57+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost:8007/p/rumah-baru-di-serpong</loc>
-    <lastmod>2025-11-26T09:54:54+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost:8007/p/rumah-subsidi-di-cibubur</loc>
-    <lastmod>2025-11-26T09:42:16+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost:8007/p/tanah-kavling-di-sentul</loc>
-    <lastmod>2025-11-26T09:39:54+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost:8007/p/rumah-klasik-di-menteng-dalam</loc>
-    <lastmod>2025-11-26T08:55:22+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost:8007/p/rumah-modern-di-bintaro-sektor-9</loc>
-    <lastmod>2025-11-26T08:53:31+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost:8007/p/rumah-tropis-di-pondok-indah</loc>
-    <lastmod>2025-11-26T03:46:56+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost:8007/p/kost-eksklusif-di-senopati-jakarta</loc>
-    <lastmod>2025-11-24T10:06:18+00:00</lastmod>
+    <loc>http://property-affiliate.test/p/penthouse-mewah-di-scbd-jakarta</loc>
+    <lastmod>2025-11-28T06:09:44+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
             </url>

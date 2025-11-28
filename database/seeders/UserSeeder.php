@@ -14,21 +14,21 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Super Admin user
-        $superAdmin = User::firstOrCreate(
-            ['email' => 'admin@pams.test'],
-            [
-                'name' => 'Super Admin',
-                'password' => Hash::make('password'),
-                'whatsapp' => '081234567890',
-                'status' => UserStatus::ACTIVE,
-            ]
-        );
+        // // Create Super Admin user
+        // $superAdmin = User::firstOrCreate(
+        //     ['email' => 'admin@pams.test'],
+        //     [
+        //         'name' => 'Super Admin',
+        //         'password' => Hash::make('password'),
+        //         'whatsapp' => '081234567890',
+        //         'status' => UserStatus::ACTIVE,
+        //     ]
+        // );
 
-        // Assign super_admin role
-        if (!$superAdmin->hasRole('super_admin')) {
-            $superAdmin->assignRole('super_admin');
-        }
+        // // Assign super_admin role
+        // if (!$superAdmin->hasRole('super_admin')) {
+        //     $superAdmin->assignRole('super_admin');
+        // }
 
         // Create 5 affiliate users with unique codes
         $affiliates = [
@@ -73,12 +73,12 @@ class UserSeeder extends Seeder
                     'whatsapp' => $affiliateData['whatsapp'],
                     'affiliate_code' => $affiliateData['affiliate_code'],
                     'status' => UserStatus::ACTIVE,
-                    'biodata' => 'This is a sample biodata for ' . $affiliateData['name'],
+                    'biodata' => 'This is a sample biodata for '.$affiliateData['name'],
                 ]
             );
 
             // Assign affiliate role
-            if (!$affiliate->hasRole('affiliate')) {
+            if (! $affiliate->hasRole('affiliate')) {
                 $affiliate->assignRole('affiliate');
             }
         }
@@ -116,7 +116,7 @@ class UserSeeder extends Seeder
         }
 
         $this->command->info('Users seeded successfully!');
-        $this->command->info('Super Admin: admin@pams.test / password');
+        // $this->command->info('Super Admin: admin@pams.test / password');
         $this->command->info('5 Affiliates created with codes: AHMAD001, SITI0002, BUDI0003, DEWI0004, EKO00005');
         $this->command->info('3 Pending users created for approval testing');
     }
