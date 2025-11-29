@@ -38,6 +38,9 @@
 
     @livewireStyles
 
+    <!-- Additional Styles -->
+    @stack('styles')
+
     <!-- Google Analytics -->
     @if (config('services.google_analytics.id'))
         <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google_analytics.id') }}"></script>
@@ -276,6 +279,9 @@
     </footer>
 
     @livewireScripts
+
+    <!-- Additional Scripts -->
+    @stack('scripts')
 
     <script>
         function toggleMobileMenu() {

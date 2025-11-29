@@ -95,3 +95,46 @@ tail -f storage/logs/laravel.log
 ## Last Updated
 
 2025-11-29 - Initial production deployment
+
+## Known Issues & Solutions
+
+### Issue: 403 Access Denied after login (Production only)
+
+**Symptoms:**
+
+-   Login works on local server
+-   Production shows 403 after successful login
+-   User is authenticated but cannot access dashboard
+
+**Root Cause:**
+Session cookies not being set correctly due to HTTPS/proxy configuration.
+
+**Solution:**
+
+1. Ensure `.env` has these settings:
+
+```env
+SESSION_SECURE_COOKIE=true
+SESSION_HTTP_ONLY=true
+SESSION_SAME_SITE=lax
+```
+
+2. Clear all caches:
+
+```bash
+php artisan optimize:clear
+php artisan config:cache
+```
+
+3. Clear browser cookies and test in Incognito mode
+
+4. Verify cookie is set with Secure flag in browser DevTools
+
+## Deployment Script
+
+Use `deploy-to-server.sh` for automated deployment:
+
+```bash
+chmod +x deploy-to-server.sh
+./deploy-to-server.sh
+```
