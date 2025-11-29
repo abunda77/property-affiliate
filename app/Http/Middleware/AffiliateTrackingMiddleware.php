@@ -21,22 +21,11 @@ class AffiliateTrackingMiddleware
     {
         // Skip ALL processing for Livewire requests to prevent interference
         if ($request->is('livewire/*')) {
-            Log::debug('AffiliateTrackingMiddleware: Skipping Livewire request completely', [
-                'url' => $request->fullUrl(),
-                'method' => $request->method(),
-            ]);
+
             return $next($request);
         }
 
-        // Add debug logging
-        Log::debug('AffiliateTrackingMiddleware: Processing request', [
-            'url' => $request->fullUrl(),
-            'method' => $request->method(),
-            'is_livewire' => $request->is('livewire/*'),
-            'has_ref' => $request->has('ref'),
-            'has_affiliate_cookie' => $request->cookie('affiliate_id'),
-            'all_cookies' => $request->cookie(),
-        ]);
+
 
         $affiliateId = null;
 
@@ -51,10 +40,7 @@ class AffiliateTrackingMiddleware
                 // Set cookie with 30-day expiration (43200 minutes)
                 Cookie::queue('affiliate_id', $affiliateId, 43200);
                 
-                Log::debug('AffiliateTrackingMiddleware: Found affiliate from ref parameter', [
-                    'affiliate_id' => $affiliateId,
-                    'affiliate_code' => $request->query('ref'),
-                ]);
+
             }
         }
         // Read affiliate_id from existing cookie if no ref parameter
@@ -77,31 +63,17 @@ class AffiliateTrackingMiddleware
         if ($cookieValue !== null && $cookieValue !== '') {
             $affiliateId = (int) $cookieValue;
             
-            Log::debug('AffiliateTrackingMiddleware: Found affiliate from cookie', [
-                'affiliate_id' => $affiliateId,
-                'cookie_value_raw' => $cookieValue,
-                'cookie_value_casted' => (int) $cookieValue,
-                'all_cookies' => $request->cookie(),
-                'raw_cookies' => $_COOKIE ?? [],
-            ]);
+
         }
 
         // Record visit if we have an affiliate ID
         if ($affiliateId) {
-            Log::debug('AffiliateTrackingMiddleware: About to record visit', [
-                'affiliate_id' => $affiliateId,
-                'visit_count_before' => \App\Models\Visit::where('affiliate_id', $affiliateId)->count(),
-            ]);
+
             $this->recordVisit($affiliateId, $request);
-            Log::debug('AffiliateTrackingMiddleware: Visit recording completed', [
-                'affiliate_id' => $affiliateId,
-                'visit_count_after' => \App\Models\Visit::where('affiliate_id', $affiliateId)->count(),
-            ]);
+
         }
 
-        Log::debug('AffiliateTrackingMiddleware: Passing to next middleware', [
-            'affiliate_id' => $affiliateId,
-        ]);
+
 
         return $next($request);
     }
@@ -118,16 +90,11 @@ class AffiliateTrackingMiddleware
         try {
             // Skip tracking for Livewire update requests
             if ($request->is('livewire/*')) {
-                Log::debug('AffiliateTrackingMiddleware: Skipping Livewire request', [
-                    'url' => $request->fullUrl(),
-                ]);
+
                 return;
             }
 
-            Log::debug('AffiliateTrackingMiddleware: Recording visit', [
-                'affiliate_id' => $affiliateId,
-                'url' => $request->fullUrl(),
-            ]);
+
 
             // Extract visitor IP
             $visitorIp = $request->ip();
@@ -145,14 +112,7 @@ class AffiliateTrackingMiddleware
             // Extract property_id from URL if on property page
             $propertyId = $this->extractPropertyId($request);
 
-            Log::debug('AffiliateTrackingMiddleware: Creating visit record', [
-                'affiliate_id' => $affiliateId,
-                'property_id' => $propertyId,
-                'visitor_ip' => $visitorIp,
-                'device' => $device,
-                'browser' => $browser,
-                'url' => $url,
-            ]);
+
 
             // Create Visit record
             \App\Models\Visit::create([
@@ -164,7 +124,7 @@ class AffiliateTrackingMiddleware
                 'url' => $url,
             ]);
 
-            Log::debug('AffiliateTrackingMiddleware: Visit record created successfully');
+
         } catch (\Exception $e) {
             // Log the error but don't break the request
             Log::error('Failed to record affiliate visit: ' . $e->getMessage(), [
@@ -210,9 +170,7 @@ class AffiliateTrackingMiddleware
             return 'unknown';
         }
 
-        Log::debug('AffiliateTrackingMiddleware: Detecting browser', [
-            'user_agent' => $userAgent,
-        ]);
+
 
         $browsers = [
             'Edg/' => 'Edge',  // More specific pattern for Edge
@@ -229,15 +187,12 @@ class AffiliateTrackingMiddleware
 
         foreach ($browsers as $key => $browser) {
             if (stripos($userAgent, $key) !== false) {
-                Log::debug('AffiliateTrackingMiddleware: Browser detected', [
-                    'detected_browser' => $browser,
-                    'matched_key' => $key,
-                ]);
+
                 return $browser;
             }
         }
 
-        Log::debug('AffiliateTrackingMiddleware: No browser matched, returning unknown');
+
         return 'unknown';
     }
 
