@@ -13,7 +13,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
-            \App\Http\Middleware\EnsureCorrectDomain::class,
             \App\Http\Middleware\AffiliateTrackingMiddleware::class,
         ]);
     })
@@ -42,9 +41,9 @@ return Application::configure(basePath: dirname(__DIR__))
                     'code' => 'UNAUTHORIZED',
                 ], 403);
             }
-            
+
             return response()->view('errors.403', [
-                'message' => $e->getMessage() ?: 'You are not authorized to perform this action.'
+                'message' => $e->getMessage() ?: 'You are not authorized to perform this action.',
             ], 403);
         });
 
@@ -57,9 +56,9 @@ return Application::configure(basePath: dirname(__DIR__))
                     'code' => 'NOT_FOUND',
                 ], 404);
             }
-            
+
             return response()->view('errors.404', [
-                'message' => 'The resource you are looking for could not be found.'
+                'message' => 'The resource you are looking for could not be found.',
             ], 404);
         });
 
@@ -68,14 +67,14 @@ return Application::configure(basePath: dirname(__DIR__))
             if (app()->bound('sentry')) {
                 app('sentry')->captureException($e);
             }
-            
+
             $userId = null;
             try {
                 $userId = \Illuminate\Support\Facades\Auth::id();
             } catch (\Exception $authException) {
                 // Ignore auth errors during error logging
             }
-            
+
             \Illuminate\Support\Facades\Log::error('Unexpected error occurred', [
                 'exception' => get_class($e),
                 'message' => $e->getMessage(),
