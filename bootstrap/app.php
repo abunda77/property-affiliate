@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\TrustProxies::class,
         ]);
         
+        $middleware->web(prepend: [
+            \App\Http\Middleware\ForceHttpsDetection::class,
+        ]);
+        
         $middleware->web(append: [
             \App\Http\Middleware\AffiliateTrackingMiddleware::class,
         ]);
