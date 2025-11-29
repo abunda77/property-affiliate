@@ -79,6 +79,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
                 \App\Http\Middleware\CheckUserStatus::class,
+                \App\Http\Middleware\DebugAuth::class,
             ]);
     }
 }
