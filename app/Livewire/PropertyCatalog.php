@@ -8,7 +8,7 @@ use Livewire\Attributes\Lazy;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Lazy]
+// #[Lazy] - Disabled temporarily to fix refresh loop
 class PropertyCatalog extends Component
 {
     use WithPagination;
