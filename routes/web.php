@@ -3,17 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// DEBUG ROUTE
-Route::get('/debug-request', function (\Illuminate\Http\Request $request) {
-    return response()->json([
-        'url' => $request->fullUrl(),
-        'method' => $request->method(),
-        'host' => $request->getHost(),
-        'ip' => $request->ip(),
-        'headers' => $request->headers->all(),
-        'server' => $request->server->all(),
-    ]);
-});
+
 
 // Redirect home to property catalog
 Route::get('/', function () {

@@ -15,9 +15,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\AffiliateTrackingMiddleware::class,
         ]);
-        
-        // Trust Cloudflare Proxies
-        $middleware->trustProxies(at: '*');
     })
     ->withSchedule(function ($schedule) {
         // Generate sitemap daily at 2:00 AM

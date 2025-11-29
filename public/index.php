@@ -1,14 +1,6 @@
 <?php
 
 use Illuminate\Foundation\Application;
-
-// DEBUG: Log all requests hitting index.php
-file_put_contents(
-    __DIR__ . '/../storage/logs/access_debug.log', 
-    date('Y-m-d H:i:s') . " - Request: " . $_SERVER['REQUEST_URI'] . " - Host: " . ($_SERVER['HTTP_HOST'] ?? 'N/A') . "\n", 
-    FILE_APPEND
-);
-
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
