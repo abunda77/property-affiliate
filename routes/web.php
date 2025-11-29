@@ -16,22 +16,14 @@ Route::get('/', function () {
 
 // Public property catalog routes
 Route::get('/properties', function () {
-    try {
-        \Illuminate\Support\Facades\Log::info('Properties route accessed', [
-            'session_id' => session()->getId(),
-            'has_csrf' => session()->token() ? 'yes' : 'no',
-        ]);
-        
-        return view('properties.index');
-    } catch (\Exception $e) {
-        \Illuminate\Support\Facades\Log::error('Properties route error', [
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-        ]);
-        
-        return response('Error loading properties: ' . $e->getMessage(), 500);
-    }
+    return view('properties.index');
 })->name('properties.index');
+
+// Test route without Livewire
+Route::get('/properties-test', function () {
+    $properties = \App\Models\Property::published()->with('media')->paginate(12);
+    return view('properties.test', compact('properties'));
+})->name('properties.test');
 
 Route::get('/p/{slug}', function ($slug) {
     return view('properties.show', ['slug' => $slug]);
