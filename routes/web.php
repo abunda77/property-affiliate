@@ -3,10 +3,14 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-
-
 // Redirect home to property catalog
 Route::get('/', function () {
+    \Illuminate\Support\Facades\Log::info('Home route accessed', [
+        'domain' => request()->getHost(),
+        'url' => request()->fullUrl(),
+        'ip' => request()->ip(),
+    ]);
+
     return redirect()->route('properties.index');
 });
 
