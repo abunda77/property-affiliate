@@ -13,6 +13,10 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # Handle Cloudflare HTTPS detection
+    RewriteCond %{HTTP:X-Forwarded-Proto} https
+    RewriteRule .* - [E=HTTPS:on]
+
     # Force HTTPS (uncomment if needed)
     # RewriteCond %{HTTPS} off
     # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
