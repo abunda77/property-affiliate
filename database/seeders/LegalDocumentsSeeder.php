@@ -12,8 +12,31 @@ class LegalDocumentsSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ensure settings exist to avoid MissingSettings exception
-        $keys = ['terms_and_conditions', 'privacy_policy', 'disclaimer', 'about_us'];
+        // Ensure ALL settings exist to avoid MissingSettings exception
+        $keys = [
+            // Legal Documents
+            'terms_and_conditions',
+            'privacy_policy',
+            'disclaimer',
+            'about_us',
+            // GoWA API Configuration
+            'gowa_username',
+            'gowa_password',
+            'gowa_api_url',
+            'test_phone',
+            // Logo
+            'logo_path',
+            'logo_url',
+            'favicon_path',
+            // SEO Settings
+            'seo_meta_title',
+            'seo_meta_description',
+            'seo_meta_keywords',
+            // Contact Information
+            'contact_email',
+            'contact_whatsapp',
+        ];
+        
         foreach ($keys as $key) {
             if (!\Illuminate\Support\Facades\DB::table('settings')->where('group', 'general')->where('name', $key)->exists()) {
                 \Illuminate\Support\Facades\DB::table('settings')->insert([
@@ -102,6 +125,6 @@ class LegalDocumentsSeeder extends Seeder
 
         $settings->save();
 
-        $this->command->info('Legal documents have been populated with fake data successfully!');
+        $this->command->info('General settings and legal documents have been populated successfully!');
     }
 }

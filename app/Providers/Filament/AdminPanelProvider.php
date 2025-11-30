@@ -30,7 +30,14 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(\App\Filament\Pages\Auth\Login::class)
             ->brandName('Properti Affiliate System')
-            ->brandLogo(fn () => ($path = app(\App\Settings\GeneralSettings::class)->logo_path) ? \Illuminate\Support\Facades\Storage::disk('public')->url($path) : '/images/logo.png')
+            ->brandLogo(fn () => {
+                try {
+                    $path = app(\App\Settings\GeneralSettings::class)->logo_path;
+                    return $path ? \Illuminate\Support\Facades\Storage::disk('public')->url($path) : '/images/logo.png';
+                } catch (\Spatie\LaravelSettings\Exceptions\MissingSettings $e) {
+                    return '/images/logo.png';
+                }
+            })
             ->brandLogoHeight('5rem')
             ->registration(\App\Filament\Pages\Auth\Register::class)
             ->emailVerification(\App\Filament\Pages\Auth\EmailVerificationPrompt::class)
