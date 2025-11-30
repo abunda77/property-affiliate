@@ -36,10 +36,17 @@ class GoWAService
             $this->apiUrl = $apiUrl;
         } else {
             // Use settings from database, fallback to config if not set
-            $settings = app(GeneralSettings::class);
-            $this->username = $settings->gowa_username ?? config('services.gowa.username');
-            $this->password = $settings->gowa_password ?? config('services.gowa.password');
-            $this->apiUrl = $settings->gowa_api_url ?? config('services.gowa.api_url');
+            try {
+                $settings = app(GeneralSettings::class);
+                $this->username = $settings->gowa_username ?? config('services.gowa.username');
+                $this->password = $settings->gowa_password ?? config('services.gowa.password');
+                $this->apiUrl = $settings->gowa_api_url ?? config('services.gowa.api_url');
+            } catch (\Spatie\LaravelSettings\Exceptions\MissingSettings $e) {
+                // Fallback to config if settings are missing
+                $this->username = config('services.gowa.username');
+                $this->password = config('services.gowa.password');
+                $this->apiUrl = config('services.gowa.api_url');
+            }
         }
     }
 

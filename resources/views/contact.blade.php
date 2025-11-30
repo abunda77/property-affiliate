@@ -1,6 +1,10 @@
 <x-app-layout>
     @php
-        $settings = app(\App\Settings\GeneralSettings::class);
+        try {
+            $settings = app(\App\Settings\GeneralSettings::class);
+        } catch (\Spatie\LaravelSettings\Exceptions\MissingSettings $e) {
+            $settings = null;
+        }
     @endphp
 
     <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 pt-32 pb-20">

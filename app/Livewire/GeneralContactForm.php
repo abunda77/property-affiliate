@@ -66,10 +66,14 @@ class GeneralContactForm extends Component
 
         $this->validate();
 
-        $settings = app(GeneralSettings::class);
+        try {
+            $settings = app(GeneralSettings::class);
+        } catch (\Spatie\LaravelSettings\Exceptions\MissingSettings $e) {
+            $settings = null;
+        }
 
         // Send email if configured
-        if ($settings->contact_email) {
+        if ($settings && $settings->contact_email) {
             try {
                 \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($settings) {
                     $message->to($settings->contact_email)
@@ -97,11 +101,18 @@ class GeneralContactForm extends Component
 
     public function render()
     {
-        $settings = app(GeneralSettings::class);
+        try {
+            $settings = app(GeneralSettings::class);
+            $contactEmail = $settings->contact_email;
+            $contactWhatsapp = $settings->contact_whatsapp;
+        } catch (\Spatie\LaravelSettings\Exceptions\MissingSettings $e) {
+            $contactEmail = null;
+            $contactWhatsapp = null;
+        }
         
         return view('livewire.general-contact-form', [
-            'contactEmail' => $settings->contact_email,
-            'contactWhatsapp' => $settings->contact_whatsapp,
+            'contactEmail' => $contactEmail,
+            'contactWhatsapp' => $contactWhatsapp,
         ]);
     }
 }
