@@ -64,8 +64,14 @@ class PropertyCatalog extends Component
     public function render()
     {
         try {
-            // Start with published properties and eager load media to prevent N+1
-            $query = Property::published()->with('media');
+            // Start with published properties and eager load only necessary media
+            // Use select to limit columns and reduce memory usage
+            $query = Property::published()
+                ->select(['id', 'title', 'slug', 'location', 'price', 'status', 'created_at'])
+                ->with(['media' => function ($query) {
+                    // Only load first image for catalog view
+                    $query->limit(1);
+                }]);
 
             // Apply search using Laravel Scout
             if (! empty($this->search)) {

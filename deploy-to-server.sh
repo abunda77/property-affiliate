@@ -61,7 +61,12 @@ php artisan livewire:publish --assets --force
 echo -e "${GREEN}✓ Livewire assets published${NC}"
 
 echo ""
-echo -e "${YELLOW}Step 9: Setting permissions...${NC}"
+echo -e "${YELLOW}Step 9: Optimizing database queries...${NC}"
+php artisan optimize
+echo -e "${GREEN}✓ Application optimized${NC}"
+
+echo ""
+echo -e "${YELLOW}Step 10: Setting permissions...${NC}"
 chmod -R 755 storage bootstrap/cache
 chmod -R 775 storage/logs
 echo -e "${GREEN}✓ Permissions set${NC}"
