@@ -28,7 +28,7 @@ class SuperAdminSeeder extends Seeder
         // Assign super_admin role
         if (! $superAdmin->hasRole('super_admin')) {
             $superAdmin->assignRole('super_admin');
-            $this->command->info('Super Admin role assigned to admin@pams.test');
+            $this->command->info('Super Admin role assigned to superadmin@pams.test');
         }
 
         // Create Admin user

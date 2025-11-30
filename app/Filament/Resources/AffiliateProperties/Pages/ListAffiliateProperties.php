@@ -20,4 +20,9 @@ class ListAffiliateProperties extends ListRecords
     {
         return 'Generate unique tracking links for properties to share with potential buyers';
     }
+
+    public function mount(): void
+    {
+        parent::mount();
+    }
 }

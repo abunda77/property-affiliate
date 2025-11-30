@@ -53,4 +53,20 @@ php artisan permission:show
 - php artisan db:seed
 - php artisan shield:generate --all
 - php artisan shield:super-admin
-- php artisan migrate:fresh;  php artisan db:seed; php artisan shield:generate --all; php artisan shield:super-admin
+- php artisan migrate:fresh;  
+- php artisan db:seed; 
+- php artisan shield:generate --all; 
+- php artisan shield:super-admin
+
+- php artisan db:seed --class=PermissionSeeder
+- php artisan db:seed --class=RoleSeeder
+- php artisan db:seed --class=SuperAdminSeeder
+- php artisan db:seed --class=UserSeeder
+- php artisan db:seed --class=PropertySeeder
+- php artisan db:seed --class=LeadSeeder
+- php artisan db:seed --class=VisitSeeder
+- php artisan db:seed --class=LegalDocumentsSeeder
+
+# Permision folder and file
+- chown -R pamsp6170:pamsp6170 storage bootstrap/cache
+- chmod -R 775 storage bootstrap/cache

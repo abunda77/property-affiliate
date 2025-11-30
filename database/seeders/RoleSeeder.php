@@ -44,19 +44,17 @@ class RoleSeeder extends Seeder
         );
 
         // Super Admin gets all permissions
-        $allPermissions = Permission::all();
-        $superAdminRole->syncPermissions($allPermissions);
-        $this->command->info("Super Admin: {$allPermissions->count()} permissions granted");
+        $superAdminRole->givePermissionTo(Permission::all());
+        $this->command->info("Super Admin: All permissions granted");
 
-        // Admin gets most permissions except user management and critical settings
-        $adminPermissions = Permission::all()->filter(function ($permission) {
-            // Exclude user management and shield permissions
-            return ! str_contains($permission->name, 'user') &&
-                   ! str_contains($permission->name, 'shield') &&
-                   ! str_contains($permission->name, 'role');
-        });
-        $adminRole->syncPermissions($adminPermissions);
-        $this->command->info("Admin: {$adminPermissions->count()} permissions granted");
+        // Admin gets property and lead permissions only
+        $adminPermissionNames = [
+            'ViewAny:Property', 'View:Property', 'Create:Property', 'Update:Property', 'Delete:Property',
+            'ViewAny:Lead', 'View:Lead', 'Create:Lead', 'Update:Lead', 'Delete:Lead',
+            'page_Dashboard',
+        ];
+        $adminRole->syncPermissions($adminPermissionNames);
+        $this->command->info("Admin: Property and Lead permissions granted");
 
         // Affiliate gets limited permissions for dashboard and leads access
         $affiliatePermissionNames = [

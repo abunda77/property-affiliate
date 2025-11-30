@@ -9,7 +9,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class AffiliatePropertiesTable
@@ -49,6 +48,7 @@ class AffiliatePropertiesTable
                         if (strlen($state) > 30) {
                             return $state;
                         }
+
                         return null;
                     }),
 
@@ -80,41 +80,28 @@ class AffiliatePropertiesTable
             ])
             ->recordActions([
                 Action::make('copy_link')
-                    ->label('Copy Link Saya')
+                    ->label('Copy Link')
                     ->icon('heroicon-o-clipboard-document')
                     ->color('primary')
-                    ->requiresConfirmation(false)
-                    ->action(function (Property $record) {
-                        // Action is handled by JavaScript via extraAttributes
-                    })
-                    ->extraAttributes(function (Property $record) {
+                    ->requiresConfirmation()
+                    ->modalHeading('Link Affiliate Anda')
+                    ->modalDescription(function (Property $record) {
                         $user = Auth::user();
                         $affiliateCode = $user?->affiliate_code ?? '';
-                        $url = route('property.show', ['slug' => $record->slug]) . '?ref=' . $affiliateCode;
-                        
-                        return [
-                            'x-data' => '{ url: \'' . addslashes($url) . '\' }',
-                            'x-on:click.prevent' => '
-                                navigator.clipboard.writeText(url).then(() => {
-                                    new FilamentNotification()
-                                        .title(\'Link berhasil disalin!\')
-                                        .success()
-                                        .send();
-                                }).catch(() => {
-                                    new FilamentNotification()
-                                        .title(\'Gagal menyalin link\')
-                                        .danger()
-                                        .send();
-                                })
-                            ',
-                        ];
+                        $url = route('property.show', ['slug' => $record->slug]).'?ref='.$affiliateCode;
+
+                        return 'Copy link berikut untuk promosi: '.$url;
+                    })
+                    ->modalSubmitActionLabel('Tutup')
+                    ->modalCancelAction(false)
+                    ->action(function () {
+                        // Do nothing, just close modal
                     }),
-                    
+
                 Action::make('download_promo')
-                    ->label('Download Materi Promosi')
+                    ->label('Download Promo')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
-                    ->requiresConfirmation(false)
                     ->url(fn (Property $record): string => route('affiliate.download-promo', ['property' => $record->id]))
                     ->openUrlInNewTab(false),
             ])
