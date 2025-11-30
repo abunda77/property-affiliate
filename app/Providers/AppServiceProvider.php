@@ -50,6 +50,9 @@ class AppServiceProvider extends ServiceProvider
             try {
                 $settings = app(\App\Settings\GeneralSettings::class);
                 $view->with('settings', $settings);
+            } catch (\Spatie\LaravelSettings\Exceptions\MissingSettings $e) {
+                // If settings are missing (fresh database), use null
+                $view->with('settings', null);
             } catch (\Exception $e) {
                 // If settings table doesn't exist yet (during migration), use defaults
                 $view->with('settings', null);
