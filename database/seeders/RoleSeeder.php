@@ -16,6 +16,15 @@ class RoleSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
+        // Verify permissions exist
+        $permissionCount = Permission::count();
+        if ($permissionCount === 0) {
+            $this->command->error('No permissions found! Run: php artisan shield:generate --all');
+            return;
+        }
+
+        $this->command->info("Found {$permissionCount} permissions");
+
         // Create Super Admin role with all permissions
         $superAdminRole = Role::firstOrCreate(
             ['name' => 'super_admin'],
@@ -35,7 +44,9 @@ class RoleSeeder extends Seeder
         );
 
         // Super Admin gets all permissions
-        $superAdminRole->givePermissionTo(Permission::all());
+        $allPermissions = Permission::all();
+        $superAdminRole->syncPermissions($allPermissions);
+        $this->command->info("Super Admin: {$allPermissions->count()} permissions granted");
 
         // Admin gets most permissions except user management and critical settings
         $adminPermissions = Permission::all()->filter(function ($permission) {
@@ -44,10 +55,11 @@ class RoleSeeder extends Seeder
                    ! str_contains($permission->name, 'shield') &&
                    ! str_contains($permission->name, 'role');
         });
-        $adminRole->givePermissionTo($adminPermissions);
+        $adminRole->syncPermissions($adminPermissions);
+        $this->command->info("Admin: {$adminPermissions->count()} permissions granted");
 
         // Affiliate gets limited permissions for dashboard and leads access
-        $affiliatePermissions = [
+        $affiliatePermissionNames = [
             // Lead management permissions
             'view_any_lead',
             'view_lead',
@@ -58,17 +70,14 @@ class RoleSeeder extends Seeder
 
             // Widget permissions (if any exist)
             'widget_AccountWidget',
+            'widget_AffiliateStatsOverviewWidget',
+            'widget_AffiliatePerformanceChartWidget',
         ];
 
-        foreach ($affiliatePermissions as $permission) {
-            if (Permission::where('name', $permission)->exists()) {
-                $affiliateRole->givePermissionTo($permission);
-            }
-        }
+        $affiliatePermissions = Permission::whereIn('name', $affiliatePermissionNames)->get();
+        $affiliateRole->syncPermissions($affiliatePermissions);
+        $this->command->info("Affiliate: {$affiliatePermissions->count()} permissions granted");
 
-        $this->command->info('Roles and permissions configured successfully!');
-        $this->command->info('Super Admin role: All permissions granted');
-        $this->command->info('Admin role: Property, lead, and content management permissions granted');
-        $this->command->info('Affiliate role: Dashboard and lead management permissions granted');
+        $this->command->info('✓ Roles and permissions configured successfully!');
     }
 }
