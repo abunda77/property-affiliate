@@ -120,9 +120,13 @@ class PropertyCatalog extends Component
 
             $properties = $query->paginate(12);
 
+            // Get settings for hero background
+            $settings = app(\App\Settings\GeneralSettings::class);
+
             return view('livewire.property-catalog', [
                 'properties' => $properties,
                 'searchTerm' => $this->search,
+                'heroBackgroundImage' => $settings->hero_background_image,
             ]);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('PropertyCatalog render error', [
@@ -135,6 +139,7 @@ class PropertyCatalog extends Component
                 'properties' => collect(),
                 'searchTerm' => $this->search,
                 'error' => $e->getMessage(),
+                'heroBackgroundImage' => null,
             ]);
         }
     }

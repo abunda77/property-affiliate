@@ -170,6 +170,26 @@ class Settings extends SettingsPage
                             ->columnSpanFull(),
                     ])->columns(2),
 
+                Section::make('Hero Section')
+                    ->description('Pengaturan untuk bagian hero di halaman utama')
+                    ->schema([
+                        FileUpload::make('hero_background_image')
+                            ->label('Background Image Hero')
+                            ->image()
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                null,
+                                '16:9',
+                                '21:9',
+                            ])
+                            ->directory('hero-backgrounds')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->maxSize(5120)
+                            ->helperText('Upload gambar background untuk hero section dalam format PNG, JPG, atau WEBP (maksimal 5MB). Ukuran yang disarankan: 1920x1080 pixels atau lebih besar')
+                            ->columnSpanFull(),
+                    ]),
+
                 Section::make('Pengaturan SEO')
                     ->description('Konfigurasi meta tags untuk optimasi mesin pencari')
                     ->schema([

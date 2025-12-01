@@ -3,11 +3,13 @@
     <div class="relative h-[600px] flex items-center justify-center overflow-hidden">
         <!-- Background Image -->
         <div class="absolute inset-0 z-0">
-            <img 
-                src="https://images.unsplash.com/photo-1656646424620-feb44bd37437?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-                alt="Luxury Home" 
-                class="w-full h-full object-cover"
-            >
+            @if ($heroBackgroundImage)
+                <img src="{{ asset('storage/' . $heroBackgroundImage) }}" alt="Hero Background"
+                    class="w-full h-full object-cover">
+            @else
+                <img src="https://images.unsplash.com/photo-1656646424620-feb44bd37437?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Luxury Home" class="w-full h-full object-cover">
+            @endif
             <div class="absolute inset-0 bg-gray-900/60"></div>
         </div>
 
@@ -22,36 +24,34 @@
             </p>
 
             <!-- Search Bar -->
-            <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl max-w-4xl mx-auto border border-white/20 shadow-2xl">
+            <div
+                class="bg-white/10 backdrop-blur-md p-4 rounded-2xl max-w-4xl mx-auto border border-white/20 shadow-2xl">
                 <div class="flex flex-col md:flex-row gap-4">
                     <div class="flex-1 relative">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <svg class="h-5 w-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <input 
-                            type="text" 
-                            wire:model.live.debounce.500ms="search"
-                            placeholder="Cari judul, deskripsi..." 
-                            class="w-full pl-11 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white/20 transition-all"
-                        >
+                        <input type="text" wire:model.live.debounce.500ms="search"
+                            placeholder="Cari judul, deskripsi..."
+                            class="w-full pl-11 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white/20 transition-all">
                     </div>
                     <div class="flex-1 relative">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <svg class="h-5 w-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                         </div>
-                        <input 
-                            type="text" 
-                            wire:model.live.debounce.500ms="location"
-                            placeholder="Masukkan lokasi..." 
-                            class="w-full pl-11 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white/20 transition-all"
-                        >
+                        <input type="text" wire:model.live.debounce.500ms="location" placeholder="Masukkan lokasi..."
+                            class="w-full pl-11 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white/20 transition-all">
                     </div>
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-blue-600/30">
+                    <button
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-blue-600/30">
                         Cari
                     </button>
                 </div>
@@ -82,8 +82,9 @@
                 <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 sticky top-24">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-lg font-bold text-gray-900">Filter Lanjutan</h2>
-                        @if($search || $location || $minPrice || $maxPrice)
-                            <button wire:click="clearFilters" class="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                        @if ($search || $location || $minPrice || $maxPrice)
+                            <button wire:click="clearFilters"
+                                class="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors">
                                 Reset
                             </button>
                         @endif
@@ -97,21 +98,13 @@
                         <div class="space-y-3">
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">Rp</span>
-                                <input 
-                                    type="number" 
-                                    wire:model.live.debounce.500ms="minPrice"
-                                    placeholder="Minimum"
-                                    class="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                >
+                                <input type="number" wire:model.live.debounce.500ms="minPrice" placeholder="Minimum"
+                                    class="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                             </div>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">Rp</span>
-                                <input 
-                                    type="number" 
-                                    wire:model.live.debounce.500ms="maxPrice"
-                                    placeholder="Maksimum"
-                                    class="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                >
+                                <input type="number" wire:model.live.debounce.500ms="maxPrice" placeholder="Maksimum"
+                                    class="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                             </div>
                         </div>
                     </div>
@@ -122,18 +115,17 @@
                             Urutkan
                         </label>
                         <div class="relative">
-                            <select 
-                                id="sortBy"
-                                wire:model.live="sortBy"
-                                class="w-full pl-4 pr-10 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white transition-all"
-                            >
+                            <select id="sortBy" wire:model.live="sortBy"
+                                class="w-full pl-4 pr-10 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white transition-all">
                                 <option value="newest">Terbaru</option>
                                 <option value="lowest_price">Harga Terendah</option>
                                 <option value="highest_price">Harga Tertinggi</option>
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
                         </div>
@@ -160,58 +152,68 @@
                     </div>
                 </div>
 
-                @if($properties->count() > 0)
+                @if ($properties->count() > 0)
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                        @foreach($properties as $property)
-                            <article class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100 overflow-hidden flex flex-col h-full">
-                                <a href="{{ route('property.show', $property->slug) }}" wire:navigate class="flex flex-col h-full">
+                        @foreach ($properties as $property)
+                            <article
+                                class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100 overflow-hidden flex flex-col h-full">
+                                <a href="{{ route('property.show', $property->slug) }}" wire:navigate
+                                    class="flex flex-col h-full">
                                     <!-- Image -->
                                     <div class="relative aspect-[4/3] overflow-hidden">
-                                        @if($property->getFirstMediaUrl('images', 'thumb'))
-                                            <img 
-                                                src="{{ $property->getFirstMediaUrl('images', 'medium') }}" 
+                                        @if ($property->getFirstMediaUrl('images', 'thumb'))
+                                            <img src="{{ $property->getFirstMediaUrl('images', 'medium') }}"
                                                 alt="{{ $property->title }}"
                                                 class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                                                loading="lazy"
-                                            >
+                                                loading="lazy">
                                         @else
                                             <div class="w-full h-full bg-gray-100 flex items-center justify-center">
-                                                <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                <svg class="w-12 h-12 text-gray-300" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
                                             </div>
                                         @endif
-                                        
+
                                         <!-- Badge -->
                                         <div class="absolute top-4 left-4">
-                                            <span class="bg-white/90 backdrop-blur-sm {{ $property->listing_type == 'sale' ? 'text-blue-600' : 'text-purple-600' }} text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                                            <span
+                                                class="bg-white/90 backdrop-blur-sm {{ $property->listing_type == 'sale' ? 'text-blue-600' : 'text-purple-600' }} text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
                                                 {{ $property->listing_type == 'sale' ? 'Dijual' : 'Disewakan' }}
                                             </span>
                                         </div>
-                                        
+
                                         <!-- Price Overlay -->
-                                        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent p-4">
-                                            <p class="text-white font-bold text-xl">{{ $property->formatted_price }}</p>
+                                        <div
+                                            class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent p-4">
+                                            <p class="text-white font-bold text-xl">{{ $property->formatted_price }}
+                                            </p>
                                         </div>
                                     </div>
 
                                     <!-- Content -->
                                     <div class="p-5 flex-1 flex flex-col">
-                                        <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                                            @if($searchTerm)
+                                        <h3
+                                            class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                            @if ($searchTerm)
                                                 {!! $this->highlightSearchTerm($property->title, $searchTerm) !!}
                                             @else
                                                 {{ $property->title }}
                                             @endif
                                         </h3>
-                                        
+
                                         <div class="flex items-center text-gray-500 text-sm mb-4">
-                                            <svg class="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <svg class="w-4 h-4 mr-1.5 flex-shrink-0" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
                                             <span class="truncate">
-                                                @if($searchTerm)
+                                                @if ($searchTerm)
                                                     {!! $this->highlightSearchTerm($property->location, $searchTerm) !!}
                                                 @else
                                                     {{ $property->location }}
@@ -220,14 +222,18 @@
                                         </div>
 
                                         <!-- Features -->
-                                        @if($property->features && count($property->features) > 0)
-                                            <div class="mt-auto pt-4 border-t border-gray-100 flex items-center gap-4 text-sm text-gray-600">
-                                                @foreach(array_slice($property->features, 0, 3) as $feature)
+                                        @if ($property->features && count($property->features) > 0)
+                                            <div
+                                                class="mt-auto pt-4 border-t border-gray-100 flex items-center gap-4 text-sm text-gray-600">
+                                                @foreach (array_slice($property->features, 0, 3) as $feature)
                                                     <div class="flex items-center gap-1.5">
-                                                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                        <svg class="w-4 h-4 text-blue-500" fill="none"
+                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M5 13l4 4L19 7" />
                                                         </svg>
-                                                        <span class="truncate max-w-[80px]">{{ is_string($feature) ? $feature : $loop->index }}</span>
+                                                        <span
+                                                            class="truncate max-w-[80px]">{{ is_string($feature) ? $feature : $loop->index }}</span>
                                                     </div>
                                                 @endforeach
                                             </div>
@@ -239,20 +245,26 @@
                     </div>
 
                     <!-- Pagination -->
-                    @if($properties->hasPages())
+                    @if ($properties->hasPages())
                         <div class="mt-12 flex justify-center">
                             <div class="flex items-center space-x-1">
                                 {{-- Previous Page Link --}}
                                 @if ($properties->onFirstPage())
-                                    <span class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    <span
+                                        class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 19l-7-7 7-7"></path>
                                         </svg>
                                     </span>
                                 @else
-                                    <a href="{{ $properties->previousPageUrl() }}" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    <a href="{{ $properties->previousPageUrl() }}"
+                                        class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 19l-7-7 7-7"></path>
                                         </svg>
                                     </a>
                                 @endif
@@ -260,11 +272,13 @@
                                 {{-- Pagination Elements --}}
                                 @foreach ($properties->getUrlRange(1, $properties->lastPage()) as $page => $url)
                                     @if ($page == $properties->currentPage())
-                                        <span class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-lg">
+                                        <span
+                                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-lg">
                                             {{ $page }}
                                         </span>
                                     @else
-                                        <a href="{{ $url }}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600 transition-colors">
+                                        <a href="{{ $url }}"
+                                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600 transition-colors">
                                             {{ $page }}
                                         </a>
                                     @endif
@@ -272,15 +286,21 @@
 
                                 {{-- Next Page Link --}}
                                 @if ($properties->hasMorePages())
-                                    <a href="{{ $properties->nextPageUrl() }}" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    <a href="{{ $properties->nextPageUrl() }}"
+                                        class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7"></path>
                                         </svg>
                                     </a>
                                 @else
-                                    <span class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    <span
+                                        class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7"></path>
                                         </svg>
                                     </span>
                                 @endif
@@ -289,20 +309,25 @@
 
                         {{-- Pagination Info --}}
                         <div class="mt-4 text-center text-sm text-gray-600">
-                            Menampilkan {{ $properties->firstItem() }} sampai {{ $properties->lastItem() }} dari {{ $properties->total() }} hasil
+                            Menampilkan {{ $properties->firstItem() }} sampai {{ $properties->lastItem() }} dari
+                            {{ $properties->total() }} hasil
                         </div>
                     @endif
                 @else
                     <div class="bg-white rounded-2xl shadow-sm p-12 text-center border border-gray-100">
                         <div class="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Tidak ada properti ditemukan</h3>
-                        <p class="text-gray-500 mb-8 max-w-md mx-auto">Maaf, kami tidak dapat menemukan properti yang sesuai dengan kriteria pencarian Anda.</p>
-                        @if($search || $location || $minPrice || $maxPrice)
-                            <button wire:click="clearFilters" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors shadow-lg shadow-blue-600/30">
+                        <p class="text-gray-500 mb-8 max-w-md mx-auto">Maaf, kami tidak dapat menemukan properti yang
+                            sesuai dengan kriteria pencarian Anda.</p>
+                        @if ($search || $location || $minPrice || $maxPrice)
+                            <button wire:click="clearFilters"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors shadow-lg shadow-blue-600/30">
                                 Reset Filter
                             </button>
                         @endif
