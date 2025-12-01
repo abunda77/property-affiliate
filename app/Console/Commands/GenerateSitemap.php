@@ -55,13 +55,14 @@ class GenerateSitemap extends Command
                 }
             });
 
-        // Write sitemap to public directory
-        $sitemap->writeToFile(public_path('sitemap.xml'));
+        // Write sitemap to storage directory (has write permission)
+        $sitemapPath = storage_path('app/public/sitemap.xml');
+        $sitemap->writeToFile($sitemapPath);
 
         // Cache sitemap for 24 hours
         Cache::put('sitemap_last_generated', now(), 86400);
 
-        $this->info('Sitemap generated successfully at: ' . public_path('sitemap.xml'));
+        $this->info('Sitemap generated successfully at: ' . $sitemapPath);
 
         return Command::SUCCESS;
     }

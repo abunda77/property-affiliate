@@ -76,6 +76,20 @@ Route::middleware(['auth'])->group(function () {
         ->name('affiliate.download-promo');
 });
 
+// Sitemap route - serve from storage
+Route::get('/sitemap.xml', function () {
+    $sitemapPath = storage_path('app/public/sitemap.xml');
+    
+    if (!file_exists($sitemapPath)) {
+        // Generate sitemap if not exists
+        \Illuminate\Support\Facades\Artisan::call('sitemap:generate');
+    }
+    
+    return response()->file($sitemapPath, [
+        'Content-Type' => 'application/xml',
+    ]);
+})->name('sitemap');
+
 // Dynamic robots.txt
 Route::get('/robots.txt', function () {
     $content = "User-agent: *\nDisallow:\n\nSitemap: ".url('/sitemap.xml');

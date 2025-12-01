@@ -69,4 +69,5 @@ php artisan permission:show
 
 # Permision folder and file
 - chown -R pamsp6170:pamsp6170 storage bootstrap/cache
+- chown -R pamsp6170:pamsp6170 sitemap.xml
 - chmod -R 775 storage bootstrap/cache
