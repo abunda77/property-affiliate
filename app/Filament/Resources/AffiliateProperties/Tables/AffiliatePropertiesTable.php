@@ -83,19 +83,13 @@ class AffiliatePropertiesTable
                     ->label('Copy Link')
                     ->icon('heroicon-o-clipboard-document')
                     ->color('primary')
-                    ->requiresConfirmation()
-                    ->modalHeading('Link Affiliate Anda')
-                    ->modalDescription(function (Property $record) {
+                    ->action(function (Property $record, $livewire) {
                         $user = Auth::user();
                         $affiliateCode = $user?->affiliate_code ?? '';
                         $url = route('property.show', ['slug' => $record->slug]).'?ref='.$affiliateCode;
 
-                        return 'Copy link berikut untuk promosi: '.$url;
-                    })
-                    ->modalSubmitActionLabel('Tutup')
-                    ->modalCancelAction(false)
-                    ->action(function () {
-                        // Do nothing, just close modal
+                        // Dispatch Livewire event to copy to clipboard
+                        $livewire->dispatch('copy-to-clipboard', text: $url);
                     }),
 
                 Action::make('download_promo')

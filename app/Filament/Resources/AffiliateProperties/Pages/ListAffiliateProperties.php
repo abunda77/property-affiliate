@@ -11,6 +11,8 @@ class ListAffiliateProperties extends ListRecords
 
     protected static ?string $title = 'Link Generator';
 
+    protected string $view = 'filament.resources.affiliate-properties.pages.list-affiliate-properties';
+
     public function getHeading(): string
     {
         return 'Link Generator';
@@ -24,5 +26,17 @@ class ListAffiliateProperties extends ListRecords
     public function mount(): void
     {
         parent::mount();
+    }
+
+    protected function getViewData(): array
+    {
+        return array_merge(parent::getViewData(), [
+            'copyToClipboardScript' => true,
+        ]);
+    }
+
+    public function getFooterWidgetsColumns(): int | array
+    {
+        return 1;
     }
 }
