@@ -13,14 +13,17 @@ class ForceHttpsDetection
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Force HTTPS detection for Cloudflare
-        if ($request->header('x-forwarded-proto') === 'https' || 
-            $request->header('cf-visitor') === '{"scheme":"https"}' ||
-            $request->server('HTTP_X_FORWARDED_PROTO') === 'https') {
-            
-            $request->server->set('HTTPS', 'on');
-            $request->server->set('SERVER_PORT', 443);
-            $request->server->set('REQUEST_SCHEME', 'https');
+        // Only force HTTPS detection in production environment
+        if (app()->environment('production')) {
+            // Force HTTPS detection for Cloudflare and other proxies
+            if ($request->header('x-forwarded-proto') === 'https' || 
+                $request->header('cf-visitor') === '{"scheme":"https"}' ||
+                $request->server('HTTP_X_FORWARDED_PROTO') === 'https') {
+                
+                $request->server->set('HTTPS', 'on');
+                $request->server->set('SERVER_PORT', 443);
+                $request->server->set('REQUEST_SCHEME', 'https');
+            }
         }
         
         return $next($request);
