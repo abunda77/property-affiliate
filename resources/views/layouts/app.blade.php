@@ -8,6 +8,15 @@
 
     <title>@yield('title', ($settings && $settings->seo_meta_title ? $settings->seo_meta_title : config('app.name', 'PAMS')) . ' - Property Affiliate Management System')</title>
 
+    <!-- Favicon -->
+    @if ($settings && $settings->favicon_path)
+        <link rel="icon" type="image/x-icon" href="{{ Storage::url($settings->favicon_path) }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ Storage::url($settings->favicon_path) }}">
+    @else
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @endif
+
     <!-- SEO Meta Tags -->
     <meta name="description"
         content="{{ $settings && $settings->seo_meta_description ? $settings->seo_meta_description : 'Platform properti dengan sistem afiliasi terpercaya' }}">
