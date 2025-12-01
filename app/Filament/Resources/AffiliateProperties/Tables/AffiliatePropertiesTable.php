@@ -5,7 +5,6 @@ namespace App\Filament\Resources\AffiliateProperties\Tables;
 use App\Enums\PropertyStatus;
 use App\Models\Property;
 use Filament\Actions\Action;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -23,14 +22,16 @@ class AffiliatePropertiesTable
                     ->orderBy('created_at', 'desc')
             )
             ->columns([
-                ImageColumn::make('image')
-                    ->label('Image')
-                    ->getStateUsing(function (Property $record) {
-                        return $record->getFirstMediaUrl('images', 'thumb');
-                    })
-                    ->defaultImageUrl('/images/placeholder.jpg')
+                \Filament\Tables\Columns\SpatieMediaLibraryImageColumn::make('images')
+                    ->collection('images')
+                    ->conversion('thumb')
+                    ->label('Images')
                     ->circular()
-                    ->size(60),
+                    ->size(60)
+                    ->defaultImageUrl('/images/placeholder.jpg')
+                    ->stacked()
+                    ->limit(1),
+                // ->limitedRemainingText(),
 
                 TextColumn::make('title')
                     ->label('Property Title')
