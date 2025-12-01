@@ -49,7 +49,7 @@ class BackupDatabase extends Page implements HasTable
 
     private const MYSQLDUMP_PATH = [
         'windows' => 'C:\\laragon\\bin\\mysql\\mysql-8.0.30-winx64\\bin\\mysqldump.exe',
-        'linux' => '/usr/bin/mysqldump',
+        'linux' => 'mysqldump', // Use system PATH instead of hardcoded path
     ];
 
     public function table(Table $table): Table
@@ -198,11 +198,20 @@ class BackupDatabase extends Page implements HasTable
             $path = $this->ensureBackupDirectory();
             $command = $this->buildMysqlDumpCommand($filename);
 
-            $output = null;
-            $resultCode = null;
-            system($command.' 2>&1', $resultCode);
+            // Log the command for debugging (without password)
+            $logCommand = preg_replace('/--password=[^\s]+/', '--password=***', $command);
+            Log::info('Executing backup command: '.$logCommand);
 
-            $this->validateAndLogBackup($filename, $path, $resultCode);
+            $output = [];
+            $resultCode = null;
+            exec($command, $output, $resultCode);
+
+            // Log output for debugging
+            if (! empty($output)) {
+                Log::info('Backup command output: '.implode("\n", $output));
+            }
+
+            $this->validateAndLogBackup($filename, $path, $resultCode, $output);
         } catch (\Exception $e) {
             Log::error('Backup error: '.$e->getMessage());
             $this->sendErrorNotification('Backup gagal', $e->getMessage());
@@ -229,42 +238,80 @@ class BackupDatabase extends Page implements HasTable
         $os = PHP_OS_FAMILY === 'Windows' ? 'windows' : 'linux';
         $mysqldumpPath = self::MYSQLDUMP_PATH[$os] ?? 'mysqldump';
 
-        $username = config('database.connections.mysql.username');
+        $username = escapeshellarg(config('database.connections.mysql.username'));
         $password = config('database.connections.mysql.password');
-        $database = config('database.connections.mysql.database');
-        $host = config('database.connections.mysql.host');
-        $port = config('database.connections.mysql.port');
+        $database = escapeshellarg(config('database.connections.mysql.database'));
+        $host = escapeshellarg(config('database.connections.mysql.host'));
+        $port = escapeshellarg(config('database.connections.mysql.port'));
+        $outputFile = escapeshellarg($this->ensureBackupDirectory().'/'.$filename);
 
+        // For Linux/production, use single quotes and proper escaping
+        if ($os === 'linux') {
+            if (empty($password)) {
+                return sprintf(
+                    '%s --user=%s --host=%s --port=%s --single-transaction --quick --lock-tables=false %s > %s 2>&1',
+                    $mysqldumpPath,
+                    $username,
+                    $host,
+                    $port,
+                    $database,
+                    $outputFile
+                );
+            }
+
+            return sprintf(
+                '%s --user=%s --password=%s --host=%s --port=%s --single-transaction --quick --lock-tables=false %s > %s 2>&1',
+                $mysqldumpPath,
+                $username,
+                escapeshellarg($password),
+                $host,
+                $port,
+                $database,
+                $outputFile
+            );
+        }
+
+        // Windows command (original logic)
         if (empty($password)) {
             return sprintf(
-                '"%s" --user="%s" --host="%s" --port="%s" --column-statistics=0 "%s" > "%s"',
+                '"%s" --user=%s --host=%s --port=%s --column-statistics=0 %s > %s',
                 $mysqldumpPath,
                 $username,
                 $host,
                 $port,
                 $database,
-                $this->ensureBackupDirectory().'/'.$filename
+                $outputFile
             );
         }
 
         return sprintf(
-            '"%s" --user="%s" --password="%s" --host="%s" --port="%s" --column-statistics=0 "%s" > "%s"',
+            '"%s" --user=%s --password=%s --host=%s --port=%s --column-statistics=0 %s > %s',
             $mysqldumpPath,
             $username,
-            $password,
+            escapeshellarg($password),
             $host,
             $port,
             $database,
-            $this->ensureBackupDirectory().'/'.$filename
+            $outputFile
         );
     }
 
-    private function validateAndLogBackup(string $filename, string $path, ?int $resultCode)
+    private function validateAndLogBackup(string $filename, string $path, ?int $resultCode, array $output = [])
     {
         $fullPath = $path.'/'.$filename;
 
-        if ($resultCode !== 0 || ! File::exists($fullPath) || File::size($fullPath) === 0) {
-            throw new \Exception('Backup gagal dengan kode: '.$resultCode);
+        if ($resultCode !== 0) {
+            $errorMessage = ! empty($output) ? implode("\n", $output) : 'Unknown error';
+            Log::error('Backup failed with code '.$resultCode.': '.$errorMessage);
+            throw new \Exception('Backup gagal dengan kode: '.$resultCode.'. Error: '.$errorMessage);
+        }
+
+        if (! File::exists($fullPath)) {
+            throw new \Exception('Backup file tidak ditemukan setelah eksekusi');
+        }
+
+        if (File::size($fullPath) === 0) {
+            throw new \Exception('Backup file kosong (0 bytes)');
         }
 
         BackupLog::create([
