@@ -67,7 +67,7 @@ class PropertyCatalog extends Component
             // Start with published properties and eager load only necessary media
             // Use select to limit columns and reduce memory usage
             $query = Property::published()
-                ->select(['id', 'title', 'slug', 'location', 'price', 'status', 'created_at'])
+                ->select(['id', 'title', 'slug', 'location', 'price', 'status', 'listing_type', 'created_at'])
                 ->with(['media' => function ($query) {
                     // Only load first image for catalog view
                     $query->limit(1);

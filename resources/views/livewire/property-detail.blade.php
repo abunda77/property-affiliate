@@ -98,8 +98,8 @@
                 <div class="max-w-4xl">
                     <div class="flex items-center gap-2 text-blue-400 font-semibold mb-2">
                         <span
-                            class="{{ $property->listing_type == 'sale' ? 'bg-blue-600/20 border-blue-500/30' : 'bg-purple-600/20 border-purple-500/30' }} backdrop-blur-md px-3 py-1 rounded-full text-sm border">
-                            {{ $property->listing_type == 'sale' ? 'Dijual' : 'Disewakan' }}
+                            class="{{ $property->listing_type === 'sale' ? 'bg-blue-600/20 border-blue-500/30' : 'bg-purple-600/20 border-purple-500/30' }} backdrop-blur-md px-3 py-1 rounded-full text-sm border">
+                            {{ $property->listing_type === 'sale' ? 'Dijual' : 'Disewakan' }}
                         </span>
                         <span class="flex items-center text-gray-300 text-sm">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
