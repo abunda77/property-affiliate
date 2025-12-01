@@ -1,20 +1,20 @@
 <x-filament-panels::page>
     <div x-data="{
         copyToClipboard(text) {
-            console.log('Attempting to copy:', text);
-    
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text)
                     .then(() => {
-                        console.log('Copy successful!');
-                        $wire.dispatch('notify', {
-                            message: 'Link berhasil disalin!',
-                            type: 'success'
-                        });
+                        new FilamentNotification()
+                            .title('Link berhasil disalin!')
+                            .success()
+                            .send();
                     })
-                    .catch((err) => {
-                        console.error('Copy failed:', err);
-                        alert('Link berhasil disalin!');
+                    .catch(() => {
+                        new FilamentNotification()
+                            .title('Gagal menyalin link')
+                            .body('Silakan copy link secara manual')
+                            .danger()
+                            .send();
                     });
             } else {
                 // Fallback for older browsers
@@ -26,11 +26,16 @@
                 textArea.select();
                 try {
                     document.execCommand('copy');
-                    console.log('Fallback copy successful');
-                    alert('Link berhasil disalin!');
+                    new FilamentNotification()
+                        .title('Link berhasil disalin!')
+                        .success()
+                        .send();
                 } catch (err) {
-                    console.error('Fallback copy failed:', err);
-                    alert('Gagal menyalin link');
+                    new FilamentNotification()
+                        .title('Gagal menyalin link')
+                        .body('Silakan copy link secara manual')
+                        .danger()
+                        .send();
                 }
                 document.body.removeChild(textArea);
             }

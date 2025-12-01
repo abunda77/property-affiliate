@@ -27,16 +27,4 @@ class ListAffiliateProperties extends ListRecords
     {
         parent::mount();
     }
-
-    protected function getViewData(): array
-    {
-        return array_merge(parent::getViewData(), [
-            'copyToClipboardScript' => true,
-        ]);
-    }
-
-    public function getFooterWidgetsColumns(): int | array
-    {
-        return 1;
-    }
 }
