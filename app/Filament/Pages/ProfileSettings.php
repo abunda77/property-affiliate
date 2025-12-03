@@ -91,6 +91,39 @@ class ProfileSettings extends Page implements HasSchemas
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
+
+                Section::make('Ubah Password')
+                    ->description('Perbarui password Anda untuk keamanan akun.')
+                    ->schema([
+                        TextInput::make('current_password')
+                            ->label('Password Saat Ini')
+                            ->password()
+                            ->revealable()
+                            ->required()
+                            ->rule('current_password')
+                            ->autocomplete('current-password')
+                            ->placeholder('Masukkan password saat ini'),
+
+                        TextInput::make('password')
+                            ->label('Password Baru')
+                            ->password()
+                            ->revealable()
+                            ->required()
+                            ->minLength(8)
+                            ->same('password_confirmation')
+                            ->autocomplete('new-password')
+                            ->placeholder('Minimal 8 karakter')
+                            ->helperText('Password minimal 8 karakter'),
+
+                        TextInput::make('password_confirmation')
+                            ->label('Konfirmasi Password Baru')
+                            ->password()
+                            ->revealable()
+                            ->required()
+                            ->autocomplete('new-password')
+                            ->placeholder('Ulangi password baru'),
+                    ])
+                    ->columns(2),
             ])
             ->statePath('data');
     }
@@ -111,6 +144,7 @@ class ProfileSettings extends Page implements HasSchemas
         /** @var User $user */
         $user = Filament::auth()->user();
 
+        // Update profile information
         $user->name = $data['name'];
         $user->whatsapp = $data['whatsapp'];
         $user->biodata = $data['biodata'];
@@ -119,7 +153,35 @@ class ProfileSettings extends Page implements HasSchemas
             $user->profile_photo = $data['profile_photo'];
         }
 
+        // Update password if provided
+        if (! empty($data['current_password']) && ! empty($data['password'])) {
+            // Verify current password
+            if (! \Illuminate\Support\Facades\Hash::check($data['current_password'], $user->password)) {
+                Notification::make()
+                    ->danger()
+                    ->title('Password saat ini salah')
+                    ->body('Password yang Anda masukkan tidak sesuai dengan password saat ini.')
+                    ->send();
+
+                return;
+            }
+
+            // Update to new password
+            $user->password = $data['password'];
+        }
+
         $user->save();
+
+        // Clear password fields after save
+        $this->schema->fill([
+            'name' => $user->name,
+            'whatsapp' => $user->whatsapp,
+            'profile_photo' => $user->profile_photo,
+            'biodata' => $user->biodata,
+            'current_password' => null,
+            'password' => null,
+            'password_confirmation' => null,
+        ]);
 
         Notification::make()
             ->success()
