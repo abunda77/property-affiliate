@@ -3,9 +3,9 @@
     <div class="relative h-[600px] flex items-center justify-center overflow-hidden">
         <!-- Background Image -->
         <div class="absolute inset-0 z-0">
-            @if ($heroBackgroundImage)
+            @if (!empty($heroBackgroundImage))
                 <img src="{{ asset('storage/' . $heroBackgroundImage) }}" alt="Hero Background"
-                    class="w-full h-full object-cover">
+                    class="w-full h-full object-cover" onerror="console.error('Failed to load image:', this.src)">
             @else
                 <img src="https://images.unsplash.com/photo-1656646424620-feb44bd37437?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Luxury Home" class="w-full h-full object-cover">

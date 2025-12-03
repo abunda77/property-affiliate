@@ -82,8 +82,7 @@
                         class="flex items-center gap-2 group">
                         @if ($settings && $settings->logo_path)
                             <img src="{{ Storage::url($settings->logo_path) }}"
-                                alt="{{ $settings->seo_meta_title ?? 'PAMS' }}"
-                                class="h-20 w-auto brightness-0 invert">
+                                alt="{{ $settings->seo_meta_title ?? 'PAMS' }}" class="h-20 w-auto">
                         @else
                             <div class="bg-blue-600 p-2 rounded-lg">
                                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
