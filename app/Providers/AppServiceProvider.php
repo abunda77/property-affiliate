@@ -4,12 +4,14 @@ namespace App\Providers;
 
 
 
+use App\Listeners\ApproveUserAfterEmailVerification;
 use App\Models\Property;
 use App\Observers\PropertyObserver;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
-
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 
@@ -34,6 +36,9 @@ class AppServiceProvider extends ServiceProvider
         }
         
         Property::observe(PropertyObserver::class);
+
+        // Register event listeners
+        Event::listen(Verified::class, ApproveUserAfterEmailVerification::class);
 
 
 

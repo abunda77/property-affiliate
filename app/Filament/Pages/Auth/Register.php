@@ -40,12 +40,18 @@ class Register extends BaseRegister
             'name' => $data['name'],
             'email' => $data['email'],
             'whatsapp' => $data['whatsapp'],
-            'password' => Hash::make($data['password']),
+            'password' => $data['password'], // Don't hash here, User model will handle it with 'hashed' cast
             'status' => UserStatus::PENDING,
         ]);
 
         event(new Registered($user));
 
         return $user;
+    }
+
+    protected function afterRegistration(): void
+    {
+        // Don't auto-login, let user verify email first
+        // After email verification, user will be auto-approved
     }
 }
