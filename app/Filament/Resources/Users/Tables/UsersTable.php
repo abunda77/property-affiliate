@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Users\Tables;
 use App\Enums\UserStatus;
 use App\Notifications\AffiliateApprovedNotification;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
@@ -157,6 +158,15 @@ class UsersTable
                             ->success()
                             ->send();
                     }),
+            ])
+            ->toolbarActions([
+                DeleteBulkAction::make()
+                    ->requiresConfirmation()
+                    ->modalHeading('Delete Selected Users')
+                    ->modalDescription('Are you sure you want to delete the selected users? This action cannot be undone.')
+                    ->modalSubmitActionLabel('Yes, Delete')
+                    ->successNotificationTitle('Users Deleted')
+                    ->deselectRecordsAfterCompletion(),
             ])
             ->defaultSort('created_at', 'desc');
     }
