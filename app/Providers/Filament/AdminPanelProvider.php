@@ -3,6 +3,10 @@
 namespace App\Providers\Filament;
 
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
+use Caresome\FilamentAuthDesigner\Enums\AuthLayout;
+use Caresome\FilamentAuthDesigner\Enums\MediaDirection;
+use Caresome\FilamentAuthDesigner\Enums\ThemePosition;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -22,13 +26,26 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
+    protected static function getAuthBackgroundMedia(): string
+    {
+        try {
+            $settings = app(\App\Settings\GeneralSettings::class);
+            $heroPath = $settings->hero_background_image;
+
+            return $heroPath
+                ? \Illuminate\Support\Facades\Storage::disk('public')->url($heroPath)
+                : asset('images/default-hero.jpg');
+        } catch (\Exception $e) {
+            return asset('images/default-hero.jpg');
+        }
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login(\App\Filament\Pages\Auth\Login::class)
             ->brandName('Properti Affiliate System')
             ->brandLogo(function () {
                 try {
@@ -40,8 +57,6 @@ class AdminPanelProvider extends PanelProvider
                 }
             })
             ->brandLogoHeight('5rem')
-            ->registration(\App\Filament\Pages\Auth\Register::class)
-            ->emailVerification(\App\Filament\Pages\Auth\EmailVerificationPrompt::class)
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -83,6 +98,23 @@ class AdminPanelProvider extends PanelProvider
                         'default' => 1,
                         'sm' => 2,
                     ]),
+                AuthDesignerPlugin::make()
+                    ->login(
+                        layout: AuthLayout::Split,
+                        media: self::getAuthBackgroundMedia(),
+                        direction: MediaDirection::Left
+                    )
+                    ->registration(
+                        layout: AuthLayout::Split,
+                        media: self::getAuthBackgroundMedia(),
+                        direction: MediaDirection::Left
+                    )
+                    ->emailVerification(
+                        layout: AuthLayout::Split,
+                        media: self::getAuthBackgroundMedia(),
+                        direction: MediaDirection::Left
+                    )
+                    ->themeToggle(ThemePosition::TopRight),
             ])
             ->authMiddleware([
                 Authenticate::class,
