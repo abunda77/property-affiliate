@@ -81,6 +81,7 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->passwordReset()
             ->plugins([
                 FilamentShieldPlugin::make()
                     ->gridColumns([
@@ -110,6 +111,11 @@ class AdminPanelProvider extends PanelProvider
                         direction: MediaDirection::Left
                     )
                     ->emailVerification(
+                        layout: AuthLayout::Split,
+                        media: self::getAuthBackgroundMedia(),
+                        direction: MediaDirection::Left
+                    )
+                    ->passwordReset(
                         layout: AuthLayout::Split,
                         media: self::getAuthBackgroundMedia(),
                         direction: MediaDirection::Left
