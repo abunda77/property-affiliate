@@ -80,3 +80,17 @@ php artisan permission:show
 -   buat service queue-work systemctl
 -   systemctl start queue:work
 -   systemctl enable queue:work
+
+# LARAVEL BOOSt MCP SERVER
+- Konfigurasi MCP Server
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "php",
+            "args": [
+                "artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
