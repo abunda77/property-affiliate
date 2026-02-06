@@ -73,7 +73,8 @@ class UserForm
                             ->visibility('public')
                             ->label('Profile Photo')
                             ->imageEditor()
-                            ->circleCropper(),
+                            ->circleCropper()
+                            ->optimize('webp'),
 
                         RichEditor::make('biodata')
                             ->label('Biodata')

@@ -84,6 +84,7 @@ class ProfileSettings extends Page implements HasSchemas
                             ->visibility('public')
                             ->imageEditor()
                             ->circleCropper()
+                            ->optimize('webp')
                             ->helperText('Upload foto profil Anda (maksimal 2MB). Foto akan ditampilkan pada halaman properti yang Anda promosikan.'),
 
                         \Filament\Forms\Components\RichEditor::make('biodata')

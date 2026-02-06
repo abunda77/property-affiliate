@@ -143,6 +143,7 @@ class PropertyForm
                             ->imageEditor()
                             ->maxFiles(20)
                             ->helperText('Upload property images. First image will be used as thumbnail.')
+                            ->optimize('webp')
                             ->columnSpanFull(),
                     ]),
             ]);

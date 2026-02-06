@@ -151,7 +151,8 @@ class Settings extends SettingsPage
                             ->disk('public')
                             ->visibility('public')
                             ->maxSize(2048)
-                            ->helperText('Upload logo dalam format PNG, JPG, atau SVG (maksimal 2MB)'),
+                            ->helperText('Upload logo dalam format PNG, JPG, atau SVG (maksimal 2MB)')
+                            ->optimize('webp'),
                         TextInput::make('logo_url')
                             ->label('URL Tujuan Logo')
                             ->url()
@@ -167,7 +168,8 @@ class Settings extends SettingsPage
                             ->visibility('public')
                             ->maxSize(1024)
                             ->helperText('Upload favicon dalam format ICO, PNG, atau JPG (maksimal 1MB). Ukuran yang disarankan: 16x16, 32x32, atau 48x48 pixels')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->optimize('webp'),
                     ])->columns(2),
 
                 Section::make('Hero Section')
@@ -187,7 +189,8 @@ class Settings extends SettingsPage
                             ->visibility('public')
                             ->maxSize(5120)
                             ->helperText('Upload gambar background untuk hero section dalam format PNG, JPG, atau WEBP (maksimal 5MB). Ukuran yang disarankan: 1920x1080 pixels atau lebih besar')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->optimize('webp'),
                     ]),
 
                 Section::make('Pengaturan SEO')
